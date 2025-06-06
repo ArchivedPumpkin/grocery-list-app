@@ -11,17 +11,11 @@ import {
   remove,
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
-import {
-  FIREBASE_DATABASE_URL,
-  APP_CHECK_RECAPTCHA_SITE_KEY,
-} from "./config.js";
-
-const firebaseConfig = {
-  databaseURL: FIREBASE_DATABASE_URL,
-}; // Your Firebase configuration object
+import { firebaseConfig, APP_CHECK_RECAPTCHA_SITE_KEY } from "./config.js";
 
 const app = initializeApp(firebaseConfig);
-const appCheck = initializeAppCheck(app, {
+// Initialize Firebase App Check with reCAPTCHA v3
+initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider(APP_CHECK_RECAPTCHA_SITE_KEY),
   isTokenAutoRefreshEnabled: true, // Set to true to enable automatic token refresh
 });
