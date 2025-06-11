@@ -14,24 +14,31 @@ input {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #5f9341;
+    border: none;
+    background-color: #f2f2f2;
 }
 
 .input-container {
     display: flex;
     box-sizing: border-box;
     margin-bottom: 10px;
+    border-radius: 5rem;
+    overflow: auto;
+    position: relative;
 }
 
-#input-btn,
-#delete-btn {
+#input-btn {
     cursor: pointer;
     background: #5f9341;
     color: white;
-    padding: 10px 20px;
     border: 1px solid #5f9341;
     font-weight: bold;
     flex: 1;
+    border-radius: 5rem;
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 25%;
 }
 
 #btn-container {
