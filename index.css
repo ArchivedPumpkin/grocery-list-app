@@ -15,7 +15,12 @@ input {
     padding: 10px;
     box-sizing: border-box;
     border: 1px solid #5f9341;
-    margin-bottom: 4px;
+}
+
+.input-container {
+    display: flex;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 #input-btn,
