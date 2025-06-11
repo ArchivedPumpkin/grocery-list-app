@@ -8,7 +8,7 @@ body {
 }
 
 label {
-    color: #5f9341;
+    color: #C64200;
     font-weight: bold;
 }
 
@@ -43,9 +43,9 @@ label {
 
 #input-btn {
     cursor: pointer;
-    background: #5f9341;
+    background: #C64200;
     color: white;
-    border: 1px solid #5f9341;
+    border: 1px solid #C64200;
     font-weight: bold;
     flex: 1;
     border-radius: 5rem;
@@ -64,7 +64,9 @@ label {
 
 #delete-btn {
     background: white;
-    color: #5f9341;
+    color: #C64200;
+    border: none;
+    float: right;
 }
 
 ul {
@@ -121,7 +123,7 @@ li {
 }
 
 a {
-    color: #5f9341;
+    color: #C64200;
 }
 
 .hide {
