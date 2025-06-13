@@ -78,12 +78,15 @@ ulEl.addEventListener("click", function (event) {
     const itemIdToDelete = event.target.getAttribute("data-delete-id");
     const itemRef = ref(database, `groceries/${itemIdToDelete}`);
     remove(itemRef);
+    console.log("Delete button clicked for item ID:", itemIdToDelete);
     return;
+
   }
 
 
   const li = event.target.closest("li");
   if (!li) return;
+  console.log("List item clicked:", li);
 
   const itemId = li.getAttribute("data-id");
   const currentCompleted = li.getAttribute("data-completed") === "true";
