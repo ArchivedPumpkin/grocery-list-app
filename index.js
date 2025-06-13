@@ -8,7 +8,7 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase App Check with reCAPTCHA v3
 // Enable App Check only in production
-if (location.hostname !== "localhost") {
+if (location.hostname !== "localhost" || location.hostname !== "grocery-list-app-ab9db--pr4-next-lj6b5bbg") {
   initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(APP_CHECK_RECAPTCHA_SITE_KEY),
     isTokenAutoRefreshEnabled: true, // Set to true to enable automatic token refresh
