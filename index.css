@@ -90,7 +90,6 @@ ul {
     display: flex;
     flex-direction: column;
     overflow: auto;
-    gap: 10px;
 }
 
 li {
@@ -98,17 +97,21 @@ li {
     justify-content: space-between;
     flex-direction: column;
     background-color: white;
-    border-radius: .5rem;
     box-sizing: border-box;
     overflow: auto;
     color: #2b2b2b;
+    border-bottom: 1px solid #f0f0f2;
+}
+
+li:last-child {
+    border: none;
 }
 
 .list__container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 10px 15px 0 15px;
 }
 
 .list__item_checkbox {
@@ -117,9 +120,9 @@ li {
 }
 
 .item-description {
-    padding: 10px 20px;
+    padding: 0 50px 10px 50px;
     display: flex;
-    border-top: 1px solid #dbd8d8;
+    font-size: 17px;
 }
 
 .delete-btn.fa.fa-times {
