@@ -63,7 +63,8 @@ function render(groceries) {
             <span class="list__item-icon fa fa-check fa-2xs ${completedClass}"></span>
             <span class="item-name">${value.name}</span>
             </div>
-            <button class="delete-btn fa fa-times" title="Delete item" data-delete-id="${key}"></button>
+            <i class="fa-solid fa-ellipsis"></i>
+            <button class="delete-btn fa fa-trash" title="Delete item" data-delete-id="${key}" style="display:none;"></button>
             </div>
             ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
             </li>
