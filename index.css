@@ -20,6 +20,7 @@ label {
     box-sizing: border-box;
     border: none;
     background-color: #f2f2f2;
+    font-size: 14px;
 }
 
 #input-el:focus-visible {
@@ -28,10 +29,12 @@ label {
 
 #input-desc {
     width: 100%;
+    height: 100px;
     padding: 20px;
     box-sizing: border-box;
     border: none;
     background-color: #f2f2f2;
+    font-size: 14px;
 }
 
 .input-container {
