@@ -3,13 +3,15 @@
 body {
     font-family: 'Inter', sans-serif;
     margin: 0 auto;
-    max-width: 350px;
+    max-width: 380px;
     background-color: #f0f0f2;
 }
 
 label {
     color: #C64200;
     font-weight: bold;
+    font-size: 14px;
+    margin-left: 10px;
 }
 
 #input-el {
@@ -63,11 +65,15 @@ label {
 }
 
 #delete-btn {
+    justify-content: flex-end;
     background: white;
     color: #C64200;
     border: none;
-    float: right;
     cursor: pointer;
+    display: flex;
+    gap: 5px;
+    font-size: 12px;
+    margin-top: 10px;
 }
 
 ul {
@@ -163,5 +169,8 @@ a {
 
 #header {
     background-color: white;
-    padding: 20px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
