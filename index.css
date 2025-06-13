@@ -67,6 +67,7 @@ label {
     color: #C64200;
     border: none;
     float: right;
+    cursor: pointer;
 }
 
 ul {
