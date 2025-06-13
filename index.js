@@ -80,9 +80,7 @@ ulEl.addEventListener("click", function (event) {
     remove(itemRef);
     console.log("Delete button clicked for item ID:", itemIdToDelete);
     return;
-
   }
-
 
   const li = event.target.closest("li");
   if (!li) return;
@@ -120,6 +118,9 @@ onValue(referenceInDb, function (snapshot) {
     const groceries = Object.entries(snapshotValues);
     console.log(groceries);
     render(groceries);
+  } else {
+    render([]);
+    console.log("No groceries found in the database.");
   }
 });
 
