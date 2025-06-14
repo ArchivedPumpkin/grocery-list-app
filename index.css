@@ -101,7 +101,7 @@ li {
     overflow: auto;
     color: #2b2b2b;
     border-bottom: 1px solid #f0f0f2;
-    padding: 15px 20px;
+    padding: 25px 20px;
 }
 
 li:last-child {
@@ -117,13 +117,21 @@ li:last-child {
 
 .list__item_checkbox {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     align-items: center;
 }
 
 .item-description {
     display: flex;
     font-size: 14px;
+    font-weight: 300;
+    color: #B8B8B8;
+}
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .delete-btn.fa.fa-times {
@@ -151,21 +159,20 @@ a {
 
 .list__item-icon.empty-check {
     border-radius: 5rem;
-    border: 1px solid #cccbcb;
-    width: 20px;
-    height: 20px;
+    border: 1px solid #e85b06;
+    width: 25px;
+    height: 25px;
 }
 
 .list__item-icon.fa.fa-check {
-    border-radius: 5rem;
-    height: 8px;
-    width: 8px;
     justify-content: center;
-    align-content: center;
     align-items: center;
     background: #e85b06;
     color: white;
-    padding: 7px;
+    border-radius: 5rem;
+    border: 1px solid #e85b06;
+    width: 25px;
+    height: 25px;
 }
 
 .icon-object {
