@@ -118,10 +118,10 @@ li:last-child {
 .list__item_checkbox {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .item-description {
-    padding: 0 35px;
     display: flex;
     font-size: 14px;
 }
