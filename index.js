@@ -61,11 +61,13 @@ function render(groceries) {
             <div class="list__item_checkbox">
             <span class="list__item-icon empty-check ${incompletedClass}"></span>
             <span class="list__item-icon fa fa-check fa-2xs ${completedClass}"></span>
+            <div class="item-details">
             <span class="item-name">${value.name}</span>
+            ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
+            </div>
             </div>
             <button class="delete-btn fa fa-times" title="Delete item" data-delete-id="${key}"></button>
             </div>
-            ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
             </li>
         `;
   }
