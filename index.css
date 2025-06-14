@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     margin: 0 auto;
     max-width: 380px;
     background-color: #f0f0f2;
 }
 
 label {
-    color: #C64200;
+    color: #c64200;
     font-weight: bold;
     font-size: 14px;
     margin-left: 10px;
@@ -49,9 +49,9 @@ label {
 
 #input-btn {
     cursor: pointer;
-    background: #C64200;
+    background: #c64200;
     color: white;
-    border: 1px solid #C64200;
+    border: 1px solid #c64200;
     font-weight: bold;
     flex: 1;
     border-radius: 5rem;
@@ -71,7 +71,7 @@ label {
 #delete-btn {
     justify-content: flex-end;
     background: white;
-    color: #C64200;
+    color: #c64200;
     border: none;
     cursor: pointer;
     display: flex;
@@ -86,7 +86,7 @@ ul {
 }
 
 #ul-el {
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     display: flex;
     flex-direction: column;
     overflow: auto;
@@ -137,7 +137,7 @@ li:last-child {
 }
 
 a {
-    color: #C64200;
+    color: #c64200;
 }
 
 .hide {
