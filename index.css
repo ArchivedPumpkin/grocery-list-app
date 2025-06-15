@@ -208,15 +208,17 @@ a {
 }
 
 
-
+/* The original item stays in place while dragging */
 .sortable-chosen {
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    opacity: 0.5;
+    cursor: grabbing;
 }
 
-
-.sortable-drag {
-    opacity: 1 !important;
-    transform: rotate(0deg) scale(1) !important;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+/* The floating item that follows your cursor */
+.sortable-ghost {
+    opacity: 1;
+    background: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+    cursor: grabbing;
 }

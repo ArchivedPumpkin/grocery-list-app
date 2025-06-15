@@ -114,20 +114,13 @@ deleteBtn.addEventListener("dblclick", function () {
 
 function setupSortable() {
   new Sortable(ulEl, {
-    animation: 300,
-    chosenClass: "sortable-chosen",
-    dragClass: "sortable-drag",
-    onEnd: updateOrderInFirebase,
-    onStart: (evt) => {
-      // Optional: Customize drag image
-      const item = evt.item;
-      const clone = item.cloneNode(true);
-      clone.style.width = `${item.offsetWidth}px`;
-      clone.style.position = "absolute";
-      clone.style.top = "-9999px";
-      document.body.appendChild(clone);
-      evt.originalEvent.dataTransfer.setDragImage(clone, 0, 0);
-    }
+    animation: 200,
+    ghostClass: "sortable-ghost",    // ghost item while dragging
+    chosenClass: "sortable-chosen",  // item being moved
+    dragClass: "sortable-drag",      // optional: style during drag
+    delay: 100,               // Delay to start dragging
+    delayOnTouchOnly: true,   // Only delay on touch devices
+    onEnd: updateOrderInFirebase
   });
 
 }
