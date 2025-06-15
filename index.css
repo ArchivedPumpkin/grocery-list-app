@@ -222,3 +222,38 @@ a {
     transform: scale(1.02);
     cursor: grabbing;
 }
+
+/* Responsive styles for mobile */
+@media (max-width: 480px) {
+    body {
+        max-width: 100vw;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f2;
+    }
+
+    #header,
+    #input-el,
+    #input-desc,
+    .input-container,
+    #ul-el,
+    li {
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
+    #input-btn {
+        width: 35%;
+        font-size: 16px;
+    }
+
+    li {
+        padding: 18px 10px;
+        font-size: 15px;
+    }
+
+    .list__container {
+        font-size: 15px;
+    }
+}
