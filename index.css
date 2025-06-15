@@ -243,13 +243,17 @@ a {
         box-sizing: border-box;
     }
 
+    ul#ul-el {
+        margin: 20px 10px;
+    }
+
     #input-btn {
         width: 35%;
         font-size: 16px;
     }
 
     li {
-        padding: 18px 10px;
+        padding: 30px;
         font-size: 15px;
     }
 
