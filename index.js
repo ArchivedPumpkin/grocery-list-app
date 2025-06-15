@@ -165,6 +165,7 @@ function setupSortable() {
     ghostClass: "sortable-ghost",    // ghost item while dragging
     chosenClass: "sortable-chosen",  // item being moved
     dragClass: "sortable-drag",      // optional: style during drag
+    delay: 100,               // Delay to start dragging
     delayOnTouchOnly: true,   // Only delay on touch devices
     onEnd: updateOrderInFirebase
   });
