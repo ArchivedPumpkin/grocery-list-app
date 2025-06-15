@@ -56,7 +56,7 @@ function render(groceries) {
     const incompletedClass = isCompleted ? "hide" : "checked";
 
     listItems += `
-            <li data-id="${key}" data-completed="${isCompleted}">
+            <li data-id="${key}" data-completed="${isCompleted}" draggable="true">
             <div class="list__container">
             <div class="list__item_checkbox">
             <span class="list__item-icon empty-check ${incompletedClass}"></span>
@@ -112,14 +112,51 @@ deleteBtn.addEventListener("dblclick", function () {
   ulEl.innerHTML = "";
 });
 
+function setupSortable() {
+  new Sortable(ulEl, {
+    animation: 300,
+    chosenClass: "sortable-chosen",
+    dragClass: "sortable-drag",
+    onEnd: updateOrderInFirebase,
+    onStart: (evt) => {
+      // Optional: Customize drag image
+      const item = evt.item;
+      const clone = item.cloneNode(true);
+      clone.style.width = `${item.offsetWidth}px`;
+      clone.style.position = "absolute";
+      clone.style.top = "-9999px";
+      document.body.appendChild(clone);
+      evt.originalEvent.dataTransfer.setDragImage(clone, 0, 0);
+    }
+  });
+
+}
+
+function updateOrderInFirebase() {
+  const items = ulEl.querySelectorAll("li");
+
+  items.forEach((li, index) => {
+    const id = li.getAttribute("data-id");
+    const itemRef = ref(database, `groceries/${id}`);
+    update(itemRef, { order: index + 1 });
+  });
+}
+
+
+let groceriesList = [];
+
 onValue(referenceInDb, function (snapshot) {
   const snapshotExists = snapshot.exists();
 
   if (snapshotExists) {
     const snapshotValues = snapshot.val();
-    const groceries = Object.entries(snapshotValues);
+    const groceries = Object.entries(snapshotValues).sort((a, b) => {
+      return a[1].order - b[1].order;
+    });
+    groceriesList = groceries;
     console.log(groceries);
     render(groceries);
+    setupSortable();
   } else {
     render([]);
     console.log("No groceries found in the database.");
@@ -127,11 +164,13 @@ onValue(referenceInDb, function (snapshot) {
 });
 
 inputBtn.addEventListener("click", function () {
+  let orderNum = groceriesList.length > 0 ? groceriesList[groceriesList.length - 1][1].order + 1 : 1;
   if (inputEl.value.trim() === "") {
     alert("Please enter a grocery item.");
     return;
   } else {
     push(referenceInDb, {
+      order: orderNum,
       name: inputEl.value,
       description: descriptionEl.value,
       completed: false,
