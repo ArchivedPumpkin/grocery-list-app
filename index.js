@@ -81,7 +81,7 @@ function render(groceries) {
 
 ulEl.addEventListener("click", function (event) {
 
-  if (event.target.classList.contains("delete-btn")) {
+  if (event.target.classList.contains("delete-btn-items")) {
     const itemIdToDelete = event.target.getAttribute("data-delete-id");
     const itemRef = ref(database, `groceries/${itemIdToDelete}`);
     remove(itemRef);

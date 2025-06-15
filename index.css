@@ -258,7 +258,7 @@ li {
     transform: translateX(-60px);
 }
 
-.swiped .delete-btn {
+.swiped .delete-btn-items {
     transform: translateX(0);
 }
 
