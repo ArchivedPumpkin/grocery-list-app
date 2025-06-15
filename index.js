@@ -56,7 +56,9 @@ function render(groceries) {
     const incompletedClass = isCompleted ? "hide" : "checked";
 
     listItems += `
-            <li data-id="${key}" data-completed="${isCompleted}" draggable="true">
+            <li class="list-item-enter" data-id="${key}" data-completed="${isCompleted}" draggable="true">
+            <div class="swipe-wrapper">
+            <div class="swipe-content">
             <div class="list__container">
             <div class="list__item_checkbox">
             <span class="list__item-icon empty-check ${incompletedClass}"></span>
@@ -66,12 +68,15 @@ function render(groceries) {
             ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
             </div>
             </div>
-            <button class="delete-btn fa fa-times" title="Delete item" data-delete-id="${key}"></button>
+            </div>
+            </div>
+            <button class="delete-btn-items fa fa-trash" title="Delete item" data-delete-id="${key}"></button>
             </div>
             </li>
         `;
   }
   ulEl.innerHTML = listItems;
+
 }
 
 ulEl.addEventListener("click", function (event) {
@@ -107,9 +112,51 @@ ulEl.addEventListener("click", function (event) {
   update(itemRef, { completed: newCompleted });
 });
 
-deleteBtn.addEventListener("dblclick", function () {
+deleteBtn.addEventListener("click", function () {
   remove(referenceInDb);
   ulEl.innerHTML = "";
+});
+
+let groceriesList = [];
+
+onValue(referenceInDb, function (snapshot) {
+  const snapshotExists = snapshot.exists();
+
+  if (snapshotExists) {
+    const snapshotValues = snapshot.val();
+    const groceries = Object.entries(snapshotValues).sort((a, b) => {
+      return b[1].order - a[1].order;
+    });
+
+
+    groceriesList = groceries;
+    console.log(groceries);
+    render(groceries);
+    setupSortable();
+    setupSwipeWithHammer();
+  } else {
+    render([]);
+    console.log("No groceries found in the database.");
+  }
+});
+
+inputBtn.addEventListener("click", function () {
+  let orderNum = groceriesList.length > 0 ? Math.max(...groceriesList.map(item => item[1].order)) + 1 : 1;
+  if (inputEl.value.trim() === "") {
+    alert("Please enter a grocery item.");
+    return;
+  } else {
+    push(referenceInDb, {
+      order: orderNum,
+      name: inputEl.value,
+      description: descriptionEl.value,
+      completed: false,
+    });
+    inputEl.value = "";
+    descriptionEl.value = "";
+    descriptionEl.disabled = true;
+  }
+
 });
 
 function setupSortable() {
@@ -135,42 +182,40 @@ function updateOrderInFirebase() {
   });
 }
 
+function setupSwipeWithHammer() {
+  const swipeItems = document.querySelectorAll('.swipe-wrapper');
 
-let groceriesList = [];
+  swipeItems.forEach(wrapper => {
+    const hammer = new Hammer(wrapper);
 
-onValue(referenceInDb, function (snapshot) {
-  const snapshotExists = snapshot.exists();
-
-  if (snapshotExists) {
-    const snapshotValues = snapshot.val();
-    const groceries = Object.entries(snapshotValues).sort((a, b) => {
-      return a[1].order - b[1].order;
+    hammer.on('swipeleft', () => {
+      // Close others
+      document.querySelectorAll('.swipe-wrapper.swiped').forEach(el => {
+        if (el !== wrapper) el.classList.remove('swiped');
+      });
+      wrapper.classList.add('swiped');
     });
-    groceriesList = groceries;
-    console.log(groceries);
-    render(groceries);
-    setupSortable();
-  } else {
-    render([]);
-    console.log("No groceries found in the database.");
-  }
+
+    hammer.on('swiperight', () => {
+      wrapper.classList.remove('swiped');
+    });
+  });
+
+  document.addEventListener('touchstart', (e) => {
+    const isSwipe = e.target.closest('.swipe-wrapper');
+    if (!isSwipe) {
+      document.querySelectorAll('.swipe-wrapper.swiped')
+        .forEach(el => el.classList.remove('swiped'));
+    }
+  });
+
+}
+
+document.querySelectorAll('.list-item-enter').forEach((el) => {
+  el.addEventListener('animationend', () => {
+    el.classList.remove('list-item-enter');
+  });
 });
 
-inputBtn.addEventListener("click", function () {
-  let orderNum = groceriesList.length > 0 ? groceriesList[groceriesList.length - 1][1].order + 1 : 1;
-  if (inputEl.value.trim() === "") {
-    alert("Please enter a grocery item.");
-    return;
-  } else {
-    push(referenceInDb, {
-      order: orderNum,
-      name: inputEl.value,
-      description: descriptionEl.value,
-      completed: false,
-    });
-    inputEl.value = "";
-    descriptionEl.value = "";
-    descriptionEl.disabled = true;
-  }
 
-});
+
