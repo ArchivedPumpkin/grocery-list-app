@@ -264,6 +264,12 @@ li {
 
 .list-item-enter {
     animation: bounceUp 0.4s ease-out;
+    overflow: hidden;
+}
+
+.list-item-exit {
+    animation: fadeOutItem 0.35s ease forwards;
+    overflow: hidden;
 }
 
 i.fa-solid.fa-ellipsis {
@@ -284,6 +290,28 @@ i.fa-solid.fa-ellipsis {
 
     100% {
         transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutItem {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+        height: 98px;
+    }
+
+    80% {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(100px);
+        height: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 }
 

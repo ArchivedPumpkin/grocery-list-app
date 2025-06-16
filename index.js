@@ -46,6 +46,11 @@ inputEl.addEventListener("input", function (event) {
 });
 
 function render(groceries) {
+
+  document.querySelectorAll('.list-item-enter').forEach((el) => {
+    el.classList.remove('list-item-enter');
+  });
+
   let listItems = "";
   for (let i = 0; i < groceries.length; i++) {
 
@@ -54,9 +59,11 @@ function render(groceries) {
     const isCompleted = value.completed === true;
     const completedClass = isCompleted ? "checked" : "hide";
     const incompletedClass = isCompleted ? "hide" : "checked";
+    const currentIds = Array.from(ulEl.querySelectorAll("li")).map(li => li.getAttribute("data-id"));
+    const animationClass = currentIds.includes(key) ? "" : "list-item-enter";
 
     listItems += `
-            <li class="list-item-enter" data-id="${key}" data-completed="${isCompleted}" draggable="true">
+            <li class="${animationClass}" data-id="${key}" data-completed="${isCompleted}" draggable="true">
             <div class="swipe-wrapper">
             <div class="swipe-content">
             <div class="list__container">
@@ -68,7 +75,7 @@ function render(groceries) {
             ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
             </div>
             </div>
-            <i class="fa-solid fa-ellipsis"></i>
+            <i class="fa-solid fa-ellipsis drag-handle"></i>
             </div>
             </div>
             <button class="delete-btn-items fa fa-trash" title="Delete item" data-delete-id="${key}"></button>
@@ -78,15 +85,25 @@ function render(groceries) {
   }
   ulEl.innerHTML = listItems;
 
+  document.querySelectorAll('list-item-enter').forEach((el) => {
+    el.addEventListener('animationend', () => {
+      el.classList.remove('list-item-enter');
+    }, { once: true });
+  });
 }
 
 ulEl.addEventListener("click", function (event) {
 
   if (event.target.classList.contains("delete-btn-items")) {
     const itemIdToDelete = event.target.getAttribute("data-delete-id");
-    const itemRef = ref(database, `groceries/${itemIdToDelete}`);
-    remove(itemRef);
-    console.log("Delete button clicked for item ID:", itemIdToDelete);
+    const li = ulEl.querySelector(`li[data-id="${itemIdToDelete}"]`);
+    if (li) {
+      li.classList.add("list-item-exit");
+      li.addEventListener("animationend", () => {
+        const itemRef = ref(database, `groceries/${itemIdToDelete}`);
+        remove(itemRef);
+      }, { once: true });
+    }
     return;
   }
 
@@ -135,6 +152,7 @@ onValue(referenceInDb, function (snapshot) {
     render(groceries);
     setupSortable();
     setupSwipeWithHammer();
+    setupEllipsisRevealDelete();
   } else {
     render([]);
     console.log("No groceries found in the database.");
@@ -168,6 +186,7 @@ function setupSortable() {
     dragClass: "sortable-drag",      // optional: style during drag
     delay: 100,               // Delay to start dragging
     delayOnTouchOnly: true,   // Only delay on touch devices
+    handle: ".drag-handle", // Handle for dragging
     onEnd: updateOrderInFirebase
   });
 
@@ -212,11 +231,28 @@ function setupSwipeWithHammer() {
 
 }
 
-document.querySelectorAll('.list-item-enter').forEach((el) => {
-  el.addEventListener('animationend', () => {
-    el.classList.remove('list-item-enter');
+function setupEllipsisRevealDelete() {
+  ulEl.querySelectorAll('.drag-handle').forEach(handle => {
+
+    handle.addEventListener('click', (e) => {
+      const swipeWrapper = handle.closest('.swipe-wrapper');
+      if (!swipeWrapper) return;
+
+      // If already swiped, toggle off
+      if (swipeWrapper.classList.contains('swiped')) {
+        swipeWrapper.classList.remove('swiped');
+      } else {
+        // Close all other swiped elements
+        document.querySelectorAll('.swipe-wrapper.swiped').forEach(el => {
+          if (el !== swipeWrapper) el.classList.remove('swiped');
+        });
+        swipeWrapper.classList.add('swiped');
+      }
+      e.stopPropagation();
+    });
   });
-});
+}
+
 
 
 
