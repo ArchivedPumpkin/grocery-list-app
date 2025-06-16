@@ -266,6 +266,11 @@ li {
     animation: bounceUp 0.4s ease-out;
 }
 
+i.fa-solid.fa-ellipsis {
+    color: #bd4117;
+    font-size: 30px;
+}
+
 @keyframes bounceUp {
     0% {
         opacity: 1;

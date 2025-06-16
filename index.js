@@ -68,6 +68,7 @@ function render(groceries) {
             ${value.description ? `<span class="item-description">${value.description}</span>` : ""}
             </div>
             </div>
+            <i class="fa-solid fa-ellipsis"></i>
             </div>
             </div>
             <button class="delete-btn-items fa fa-trash" title="Delete item" data-delete-id="${key}"></button>
