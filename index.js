@@ -184,7 +184,7 @@ function setupSortable() {
     ghostClass: "sortable-ghost",    // ghost item while dragging
     chosenClass: "sortable-chosen",  // item being moved
     dragClass: "sortable-drag",      // optional: style during drag
-    delay: 100,               // Delay to start dragging
+    delay: 50,               // Delay to start dragging
     delayOnTouchOnly: true,   // Only delay on touch devices
     handle: ".drag-handle", // Handle for dragging
     onEnd: updateOrderInFirebase
