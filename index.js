@@ -164,6 +164,9 @@ inputBtn.addEventListener("click", function () {
   if (inputEl.value.trim() === "") {
     alert("Please enter a grocery item.");
     return;
+  } else if (groceriesList.some(item => item[1].name.toLowerCase() === inputEl.value.trim().toLowerCase())) {
+    alert("This grocery item already exists.");
+    return;
   } else {
     push(referenceInDb, {
       order: orderNum,
