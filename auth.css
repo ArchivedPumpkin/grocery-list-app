@@ -18,6 +18,7 @@
     min-height: 100vh;
     position: relative;
     box-sizing: border-box;
+    animation-delay: 0.1s;
 }
 
 #auth-container {
@@ -25,6 +26,7 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    animation-delay: 0.2s;
 }
 
 #email-input,
@@ -51,7 +53,8 @@
     color: #638773;
 }
 
-#login-btn {
+#login-btn,
+#create-account-btn {
     cursor: pointer;
     background: #38E07A;
     color: black;
@@ -62,13 +65,35 @@
     height: 48px;
     letter-spacing: 0.2px;
     margin-top: 8px;
+    animation-delay: 0.5s;
 }
 
 #register-btn {
     cursor: pointer;
-    position: absolute;
-    bottom: 20px;
     color: #638773;
     font-size: 14px;
     letter-spacing: 0.2px;
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#auth-header,
+#auth-container,
+#email-input,
+#password-input,
+#login-btn,
+#create-account-btn,
+#register-btn {
+    animation: fadeInUp 0.7s ease both;
 }

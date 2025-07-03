@@ -11,7 +11,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <script type="module" src="index.js?v=2.1.2"></script>
     <script src="https://kit.fontawesome.com/c7b137b01e.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
@@ -25,6 +24,7 @@
             <input type="email" id="email-input" placeholder="Email" />
             <input type="password" id="password-input" placeholder="Password" />
             <button id="login-btn">Login</button>
+            <button id="create-account-btn" style="display: none;">Create Account</button>
             <a id="register-btn">Don't have an account? Register</a>
         </div>
         <div id="user-info" style="display: none;">
@@ -33,5 +33,7 @@
         </div>
     </main>
 </body>
+
+<script type="module" src="auth.js?v=1.0.0"></script>
 
 </html>

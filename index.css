@@ -278,6 +278,23 @@ i.fa-solid.fa-ellipsis {
     font-size: 30px;
 }
 
+.container-btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#logout-btn {
+    background: white;
+    border: none;
+    display: flex;
+    gap: 5px;
+    font-size: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
 @keyframes bounceUp {
     0% {
         opacity: 1;
@@ -316,8 +333,58 @@ i.fa-solid.fa-ellipsis {
     }
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
+/* Apply fadeInUp animation with staggered delays */
+.header {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.1s;
+}
+
+.input-container {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.2s;
+}
+
+#input-el {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.3s;
+}
+
+#input-desc {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.4s;
+}
+
+#input-btn {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.5s;
+}
+
+#btn-container {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.6s;
+}
+
+ul#ul-el {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.7s;
+}
+
+.container-btns {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.8s;
+}
 
 /* Responsive styles for mobile */
 @media (max-width: 480px) {
