@@ -24,11 +24,10 @@ label {
     background-color: #F0F5F2;
     font-size: 14px;
     border-radius: 1rem;
+    color: #638773;
 }
 
-#input-el:focus-visible {
-    outline: none;
-}
+
 
 #input-desc {
     width: 100%;
@@ -39,6 +38,20 @@ label {
     background-color: #F0F5F2;
     font-size: 14px;
     border-radius: 1rem;
+    color: #638773;
+}
+
+#input-el:focus-visible {
+    outline: none;
+}
+
+#input-desc:focus-visible {
+    outline: none;
+}
+
+#input-el::placeholder,
+#input-desc::placeholder {
+    color: #638773;
 }
 
 .input-container {
@@ -50,9 +63,9 @@ label {
 
 #input-btn {
     cursor: pointer;
-    background: #638773;
-    color: white;
-    border: 1px solid #638773;
+    background: #38E07A;
+    color: black;
+    border: 1px solid #38E07A;
     font-weight: bold;
     flex: 1;
     border-radius: 5rem;
@@ -149,7 +162,7 @@ a {
 
 .list__item-icon.empty-check {
     border-radius: 5rem;
-    border: 1px solid #e85b06;
+    border: 1px solid #38E07A;
     width: 25px;
     height: 25px;
 }
@@ -157,10 +170,10 @@ a {
 .list__item-icon.fa.fa-check {
     justify-content: center;
     align-items: center;
-    background: #e85b06;
+    background: #38E07A;
     color: white;
     border-radius: 5rem;
-    border: 1px solid #e85b06;
+    border: 1px solid #38E07A;
     width: 25px;
     height: 25px;
 }
@@ -243,7 +256,7 @@ li {
     right: 0;
     height: 100%;
     width: 60px;
-    background: #638773;
+    background: #e85b06;
     color: white;
     border: none;
     display: flex;
@@ -274,7 +287,7 @@ li {
 }
 
 i.fa-solid.fa-ellipsis {
-    color: #bd4117;
+    color: #38E07A;
     font-size: 30px;
 }
 
