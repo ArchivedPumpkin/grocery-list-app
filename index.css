@@ -9,7 +9,7 @@ body {
 }
 
 label {
-    color: #C64200;
+    color: #638773;
     font-weight: bold;
     font-size: 14px;
     margin-left: 10px;
@@ -50,9 +50,9 @@ label {
 
 #input-btn {
     cursor: pointer;
-    background: #C64200;
+    background: #638773;
     color: white;
-    border: 1px solid #C64200;
+    border: 1px solid #638773;
     font-weight: bold;
     flex: 1;
     border-radius: 5rem;
@@ -72,7 +72,7 @@ label {
 #delete-btn {
     justify-content: flex-end;
     background: white;
-    color: #C64200;
+    color: #638773;
     border: none;
     cursor: pointer;
     display: flex;
@@ -135,7 +135,7 @@ li:last-child {
 }
 
 a {
-    color: #C64200;
+    color: #638773;
 }
 
 .hide {
@@ -243,7 +243,7 @@ li {
     right: 0;
     height: 100%;
     width: 60px;
-    background: #C64200;
+    background: #638773;
     color: white;
     border: none;
     display: flex;
