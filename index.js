@@ -15,14 +15,14 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     const userId = user.uid;
     const referenceInDb = ref(getDatabase(app), `users/${userId}/groceries`);
-    setupGroceriesApp(referenceInDb);
+    setupGroceriesApp(referenceInDb, user);
   } else {
     window.location.href = "auth.html";
   }
 });
 
 
-function setupGroceriesApp(referenceInDb) {
+function setupGroceriesApp(referenceInDb, user) {
 
   const database = getDatabase(app);
 
@@ -100,7 +100,8 @@ function setupGroceriesApp(referenceInDb) {
       if (li) {
         li.classList.add("list-item-exit");
         li.addEventListener("animationend", () => {
-          const itemRef = ref(referenceInDb, itemIdToDelete);
+          const itemRef = ref(database, `users/${user.uid}/groceries/${itemIdToDelete}`);
+
           remove(itemRef);
         }, { once: true });
       }
