@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebas
 import { getDatabase, ref, push, onValue, remove, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-import { firebaseConfig } from "./config.js";
+import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
 if (location.hostname === "localhost") {
@@ -17,7 +17,7 @@ onAuthStateChanged(auth, (user) => {
     const referenceInDb = ref(getDatabase(app), `users/${userId}/groceries`);
     setupGroceriesApp(referenceInDb, user);
   } else {
-    window.location.href = "auth.html";
+    window.location.href = "/pages/auth.html";
   }
 });
 
@@ -270,7 +270,7 @@ function setupGroceriesApp(referenceInDb, user) {
     try {
       await auth.signOut();
       console.log("User signed out successfully");
-      window.location.href = "auth.html"; // Redirect to the auth page
+      window.location.href = "/pages/auth.html"; // Redirect to the auth page
     } catch (error) {
       console.error("Error signing out:", error);
     }

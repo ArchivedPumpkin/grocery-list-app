@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { firebaseConfig } from "./config.js";
+import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -19,7 +19,7 @@ loginBtn.addEventListener("click", async () => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
         console.log("User signed in successfully");
-        window.location.href = "index.html"; // Redirect to the main app page
+        window.location.href = "/pages/index.html"; // Redirect to the main app page
     } catch (error) {
         console.error("Error signing in:", error);
         alert("Failed to sign in. Please check your credentials.");
@@ -46,7 +46,7 @@ createAccountBtn.addEventListener("click", async () => {
     try {
         await createUserWithEmailAndPassword(auth, email, password);
         console.log("User registered successfully");
-        window.location.href = "index.html"; // Redirect to the main app page
+        window.location.href = "/pages/index.html"; // Redirect to the main app page
     } catch (error) {
         console.error("Error creating account:", error);
         alert(error.message);
@@ -57,7 +57,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is signed in:", user);
         // Optionally redirect to the main app page if already signed in
-        window.location.href = "index.html";
+        window.location.href = "/pages/index.html";
     } else {
         console.log("No user is signed in");
     }
