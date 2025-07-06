@@ -197,6 +197,9 @@ a {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

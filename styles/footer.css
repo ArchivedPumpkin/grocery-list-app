@@ -9,7 +9,6 @@ footer {
     border-top: 1px solid #f0f0f2;
     position: absolute;
     bottom: 0;
-    display: none;
 }
 
 .menu {
@@ -33,4 +32,9 @@ span.menu-text {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.2px;
+}
+
+div#footer-container {
+    position: sticky;
+    bottom: 0;
 }
