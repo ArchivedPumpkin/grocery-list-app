@@ -7,8 +7,6 @@ footer {
     padding: 8px;
     box-sizing: border-box;
     border-top: 1px solid #f0f0f2;
-    position: absolute;
-    bottom: 0;
 }
 
 .menu {

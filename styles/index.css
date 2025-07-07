@@ -20,6 +20,8 @@ main {
     box-sizing: border-box;
     min-height: 100vh;
     background-color: white;
+    display: flex;
+    flex-direction: column;
 }
 
 #input-el {
@@ -111,6 +113,7 @@ ul {
     display: flex;
     flex-direction: column;
     overflow: auto;
+    flex: 1 1 auto;
 }
 
 li {
