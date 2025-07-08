@@ -1,12 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
+const usernameInput = document.getElementById("username-input");
 const loginBtn = document.getElementById("login-btn");
 const registerBtn = document.getElementById("register-btn");
 const createAccountBtn = document.getElementById("create-account-btn");
@@ -29,11 +32,13 @@ loginBtn.addEventListener("click", async () => {
 registerBtn.addEventListener("click", () => {
     if (loginBtn.style.display === "block") {
         loginBtn.style.display = "none";
+        usernameInput.style.display = "block";
         createAccountBtn.style.display = "block";
         registerBtn.textContent = "Already have an account? Log in";
     }
     else {
         loginBtn.style.display = "block";
+        usernameInput.style.display = "none";
         createAccountBtn.style.display = "none";
         registerBtn.textContent = "Don't have an account? Register";
     }
@@ -42,9 +47,22 @@ registerBtn.addEventListener("click", () => {
 createAccountBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
+    const username = usernameInput.value.trim();
+
+    if (!username) {
+        alert("Username cannot be empty");
+        return;
+    }
 
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+
+        await set(ref(db, `users/${uid}`), {
+            email: email,
+            username: username
+        })
+
         console.log("User registered successfully");
         window.location.href = "/pages/index.html"; // Redirect to the main app page
     } catch (error) {
