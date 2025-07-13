@@ -1,15 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
 if (location.hostname === "localhost") {
   console.log("Connecting to Firebase Emulator");
   connectDatabaseEmulator(getDatabase(app), "localhost", 9000);
+  connectAuthEmulator(getAuth(app), "http://localhost:9099");
 }
-const auth = getAuth(app);
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
