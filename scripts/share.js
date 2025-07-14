@@ -1,17 +1,21 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, connectDatabaseEmulator, ref, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, connectDatabaseEmulator, ref, get, set, push } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
+let auth;
+let db;
 
 if (location.hostname === "localhost") {
-    console.log("Connecting to Firebase Emulator (share.js)");
-    connectDatabaseEmulator(db, "localhost", 9000);
+    console.log("Connecting to Firebase Emulators");
+    auth = getAuth(app);
     connectAuthEmulator(auth, "http://localhost:9099");
-
+    db = getDatabase(app);
+    connectDatabaseEmulator(db, "localhost", 9000);
+} else {
+    auth = getAuth(app);
+    db = getDatabase(app);
 }
 
 const serachInput = document.getElementById("input-el");
@@ -51,13 +55,34 @@ onAuthStateChanged(auth, (user) => {
                 const addBtn = document.createElement("button");
                 addBtn.textContent = "Add";
 
-                addBtn.addEventListener("click", () => {
+                addBtn.addEventListener("click", async () => {
                     console.log("Adding friend:", userId);
+
+                    const currentUserId = user.uid;
+                    const friendsRef = ref(db, `users/${currentUserId}/friends/${userId}`);
+
+                    try {
+                        await set(friendsRef, { username: username })
+
+                        console.log("Friend added successfully");
+                        alert("Friend added successfully");
+
+                        addBtn.disabled = true; // Disable the button after adding
+                        addBtn.textContent = "Added"; // Change button text
+                    } catch (err) {
+                        console.error("Error adding friend:", err);
+                        alert("Failed to add friend. Please try again.");
+                    }
                 })
 
                 listItem.appendChild(addBtn);
                 friendsList.appendChild(listItem);
             }
+
         }
+
+
     })
+
+
 })

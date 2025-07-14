@@ -1,16 +1,22 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, ref, set, onValue, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getDatabase(app);
+
+let db;
 
 if (location.hostname === "localhost") {
-    console.log("Connecting to Firebase Emulator");
+    db = getDatabase(app);
+    connectDatabaseEmulator(db, "localhost", 9000);
     connectAuthEmulator(auth, "http://localhost:9099");
+    console.log("✅ Connected to Firebase Emulators");
+} else {
+    db = getDatabase(app);
 }
+
 
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
@@ -66,10 +72,20 @@ createAccountBtn.addEventListener("click", async () => {
         await set(ref(db, `users/${uid}`), {
             email: email,
             username: username
-        })
+        }).then(() => {
+            console.log("User data saved successfully");
+        }).catch((error) => {
+            console.error("Error saving user data:", error);
+        });
 
         console.log("User registered successfully");
-        window.location.href = "/pages/index.html"; // Redirect to the main app page
+
+        const userRef = ref(db, `users/${uid}`);
+        onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                window.location.href = "/pages/index.html"; // Redirect to the main app page
+            }
+        })
     } catch (error) {
         console.error("Error creating account:", error);
         alert(error.message);
@@ -79,8 +95,8 @@ createAccountBtn.addEventListener("click", async () => {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is signed in:", user);
-        // Optionally redirect to the main app page if already signed in
-        window.location.href = "/pages/index.html";
+        // Redirect to the main app page if already signed in
+        //window.location.href = "/pages/index.html";
     } else {
         console.log("No user is signed in");
     }

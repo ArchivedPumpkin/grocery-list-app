@@ -5,12 +5,18 @@ import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gs
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+let auth;
+let db;
 
 if (location.hostname === "localhost") {
-  console.log("Connecting to Firebase Emulator");
-  connectDatabaseEmulator(getDatabase(app), "localhost", 9000);
-  connectAuthEmulator(getAuth(app), "http://localhost:9099");
+  console.log("Connecting to Firebase Emulators");
+  auth = getAuth(app);
+  connectAuthEmulator(auth, "http://localhost:9099");
+  db = getDatabase(app);
+  connectDatabaseEmulator(db, "localhost", 9000);
+} else {
+  auth = getAuth(app);
+  db = getDatabase(app);
 }
 
 onAuthStateChanged(auth, (user) => {
