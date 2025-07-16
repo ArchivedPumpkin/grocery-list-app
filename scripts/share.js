@@ -56,24 +56,49 @@ onAuthStateChanged(auth, (user) => {
                 addBtn.textContent = "Add";
 
                 addBtn.addEventListener("click", async () => {
-                    console.log("Adding friend:", userId);
-
                     const currentUserId = user.uid;
-                    const friendsRef = ref(db, `users/${currentUserId}/friends/${userId}`);
+                    const sharedId = [currentUserId, userId].sort().join("_");
 
                     try {
-                        await set(friendsRef, { username: username })
+                        // ✅ Fetch current user's username from DB
+                        const currentUserSnapshot = await get(ref(db, `users/${currentUserId}/username`));
+                        const currentUsername = currentUserSnapshot.exists() ? currentUserSnapshot.val() : "(Unknown)";
 
-                        console.log("Friend added successfully");
-                        alert("Friend added successfully");
+                        // ✅ Create shared list
+                        const sharedRef = ref(db, `groceryLists/sharedLists/${sharedId}`);
+                        await set(sharedRef, {
+                            createdBy: currentUserId,
+                            members: {
+                                [currentUserId]: true,
+                                [userId]: true
+                            },
+                            name: `Shared with ${username}`,
+                            items: {}
+                        });
 
-                        addBtn.disabled = true; // Disable the button after adding
-                        addBtn.textContent = "Added"; // Change button text
+                        // ✅ Add reference to both users
+                        await set(ref(db, `users/${currentUserId}/groceryLists/sharedLists/${sharedId}`), {
+                            friendId: userId,
+                            friendUsername: username,
+                            listId: sharedId
+                        });
+
+                        await set(ref(db, `users/${userId}/groceryLists/sharedLists/${sharedId}`), {
+                            friendId: currentUserId,
+                            friendUsername: currentUsername, // ✅ using value from database
+                            listId: sharedId
+                        });
+
+                        addBtn.disabled = true;
+                        addBtn.textContent = "Added";
+                        alert("Friend and shared list added successfully");
                     } catch (err) {
-                        console.error("Error adding friend:", err);
-                        alert("Failed to add friend. Please try again.");
+                        console.error("Failed to add friend or create shared list:", err);
+                        alert("Something went wrong. Please try again.");
                     }
-                })
+                });
+
+
 
                 listItem.appendChild(addBtn);
                 friendsList.appendChild(listItem);

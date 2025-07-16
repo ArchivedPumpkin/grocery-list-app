@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getDatabase, ref, set, onValue, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
@@ -69,6 +69,9 @@ createAccountBtn.addEventListener("click", async () => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const uid = userCredential.user.uid;
 
+        const groceryRef = ref(db, `users/${uid}/groceryLists`);
+        const snap = await get(groceryRef);
+
         await set(ref(db, `users/${uid}`), {
             email: email,
             username: username
@@ -77,6 +80,11 @@ createAccountBtn.addEventListener("click", async () => {
         }).catch((error) => {
             console.error("Error saving user data:", error);
         });
+
+        if (!snap.exists()) {
+            await set(groceryRef, { default: {}, sharedLists: {} });
+            console.log("Default grocery list created for new user");
+        }
 
         console.log("User registered successfully");
 

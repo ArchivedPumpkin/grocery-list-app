@@ -22,7 +22,7 @@ if (location.hostname === "localhost") {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const userId = user.uid;
-    const referenceInDb = ref(getDatabase(app), `users/${userId}/groceries`);
+    const referenceInDb = ref(getDatabase(app), `users/${userId}/groceryLists/default`);
     setupGroceriesApp(referenceInDb, user);
   } else {
     window.location.href = "/pages/auth.html";
@@ -31,6 +31,8 @@ onAuthStateChanged(auth, (user) => {
 
 
 function setupGroceriesApp(referenceInDb, user) {
+
+  let activeListRef = referenceInDb;
 
   const database = getDatabase(app);
 
@@ -42,6 +44,7 @@ function setupGroceriesApp(referenceInDb, user) {
   const ulEl = document.getElementById("ul-el");
   const deleteBtn = document.getElementById("delete-btn");
   const logoutBtn = document.getElementById("logout-btn");
+  const listSelect = document.getElementById("grocery-list-select");
 
   inputEl.addEventListener("input", function (event) {
     if (event.target.value.trim() !== "") {
@@ -108,7 +111,7 @@ function setupGroceriesApp(referenceInDb, user) {
       if (li) {
         li.classList.add("list-item-exit");
         li.addEventListener("animationend", () => {
-          const itemRef = ref(database, `users/${user.uid}/groceries/${itemIdToDelete}`);
+          const itemRef = ref(activeListRef, itemIdToDelete);
 
           remove(itemRef);
         }, { once: true });
@@ -141,33 +144,35 @@ function setupGroceriesApp(referenceInDb, user) {
   });
 
   deleteBtn.addEventListener("click", function () {
-    remove(referenceInDb);
+    remove(activeListRef);
     ulEl.innerHTML = "";
   });
 
   let groceriesList = [];
 
-  onValue(referenceInDb, function (snapshot) {
-    const snapshotExists = snapshot.exists();
+  function listenToList(refToListen) {
+    onValue(refToListen, (snapshot) => {
+      if (snapshot.exists()) {
+        const snapshotValues = snapshot.val();
+        const groceries = Object.entries(snapshotValues).sort((a, b) => {
+          return b[1].order - a[1].order;
+        });
 
-    if (snapshotExists) {
-      const snapshotValues = snapshot.val();
-      const groceries = Object.entries(snapshotValues).sort((a, b) => {
-        return b[1].order - a[1].order;
-      });
+        groceriesList = groceries;
+        render(groceries);
+        setupSortable();
+        setupSwipeWithHammer();
+        setupEllipsisRevealDelete();
+      } else {
+        groceriesList = [];
+        render([]);
+        console.log("No groceries found in the database.");
+      }
+    });
+  }
 
 
-      groceriesList = groceries;
-      console.log(groceries);
-      render(groceries);
-      setupSortable();
-      setupSwipeWithHammer();
-      setupEllipsisRevealDelete();
-    } else {
-      render([]);
-      console.log("No groceries found in the database.");
-    }
-  });
+  listenToList(activeListRef);
 
   inputBtn.addEventListener("click", function () {
     let orderNum = groceriesList.length > 0 ? Math.max(...groceriesList.map(item => item[1].order)) + 1 : 1;
@@ -185,7 +190,7 @@ function setupGroceriesApp(referenceInDb, user) {
         completed: false
       });
 
-      push(referenceInDb, {
+      push(activeListRef, {
         name: inputEl.value,
         description: descriptionEl.value,
         completed: false,
@@ -217,7 +222,7 @@ function setupGroceriesApp(referenceInDb, user) {
 
     items.forEach((li, index) => {
       const id = li.getAttribute("data-id");
-      const itemRef = ref(referenceInDb, id);
+      const itemRef = ref(activeListRef, id);
       update(itemRef, { order: index + 1 });
     });
   }
@@ -283,6 +288,46 @@ function setupGroceriesApp(referenceInDb, user) {
       console.error("Error signing out:", error);
     }
   })
+
+  async function loadUserLists(userId) {
+    const listSelect = document.getElementById("grocery-list-select");
+    listSelect.innerHTML = ""; // ✅ Clear old options before reloading
+
+    const sharedRef = ref(db, `users/${userId}/groceryLists/sharedLists`);
+
+    const personalOption = document.createElement("option");
+    personalOption.value = "personal";
+    personalOption.textContent = "Personal list";
+    listSelect.appendChild(personalOption);
+
+    onValue(sharedRef, (snapshot) => {
+      const sharedLists = snapshot.val();
+      if (sharedLists) {
+        Object.entries(sharedLists).forEach(([sharedId, value]) => {
+          const option = document.createElement("option");
+          option.value = sharedId;
+          option.textContent = `Shared with ${value.friendUsername}`;
+          listSelect.appendChild(option);
+        });
+      }
+    });
+
+    listSelect.addEventListener("change", () => {
+      const selectedValue = listSelect.value;
+
+      if (selectedValue === "personal") {
+        activeListRef = ref(db, `users/${userId}/groceryLists/default`);
+      } else {
+        activeListRef = ref(db, `groceryLists/sharedLists/${selectedValue}/items`);
+      }
+
+      ulEl.innerHTML = ""; // Clear the current list
+      listenToList(activeListRef);
+      console.log("Active list changed to:", activeListRef);
+    });
+  }
+
+  loadUserLists(user.uid);
 
 }
 
