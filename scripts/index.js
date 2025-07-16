@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, child, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 import { firebaseConfig } from "../config.js";
@@ -138,7 +138,7 @@ function setupGroceriesApp(referenceInDb, user) {
     }
 
     li.setAttribute("data-completed", newCompleted);
-    const itemRef = ref(getDatabase(app), `users/${auth.currentUser.uid}/groceries/${itemId}`);
+    const itemRef = child(activeListRef, itemId);
 
     update(itemRef, { completed: newCompleted });
   });
