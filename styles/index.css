@@ -417,6 +417,57 @@ footer {
     animation-delay: 0.9s;
 }
 
+#grocery-list-select {
+    max-width: 180px;
+    height: 40px;
+    padding: 5px 50px 5px 10px;
+    font-size: 14px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    color: #638773;
+    background-color: #F0F5F2;
+    border: 1px solid #38E07A;
+    border-radius: 8px;
+    box-sizing: border-box;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23638773' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+}
+
+#grocery-list-select:focus {
+    border-color: #38E07A;
+    box-shadow: 0 0 5px rgba(56, 224, 122, 0.5);
+}
+
+#grocery-list-select option {
+    font-size: 14px;
+    color: #2b2b2b;
+    background-color: white;
+}
+
+#grocery-list-select.loading {
+    color: #B8B8B8;
+    /* Grey text for loading state */
+    background-image: linear-gradient(90deg, #F0F5F2 25%, #E0E5E2 50%, #F0F5F2 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    cursor: wait;
+    /* Show a wait cursor */
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
 /* Responsive styles for mobile */
 @media (max-width: 480px) {
     body {

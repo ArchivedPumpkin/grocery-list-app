@@ -291,6 +291,10 @@ function setupGroceriesApp(referenceInDb, user) {
 
   async function loadUserLists(userId) {
     const listSelect = document.getElementById("grocery-list-select");
+
+    listSelect.classList.add("loading"); // Add loading class to show loading state
+    listSelect.disabled = true; // Disable the select while loading
+
     listSelect.innerHTML = ""; // ✅ Clear old options before reloading
 
     const sharedRef = ref(db, `users/${userId}/groceryLists/sharedLists`);
@@ -300,16 +304,26 @@ function setupGroceriesApp(referenceInDb, user) {
     personalOption.textContent = "Personal list";
     listSelect.appendChild(personalOption);
 
+    const maxCharacters = 8; // Maximum characters for the option text
+
     onValue(sharedRef, (snapshot) => {
       const sharedLists = snapshot.val();
       if (sharedLists) {
         Object.entries(sharedLists).forEach(([sharedId, value]) => {
           const option = document.createElement("option");
           option.value = sharedId;
-          option.textContent = `Shared with ${value.friendUsername}`;
+
+          // Truncate the username if it exceeds maxCharacters
+          const truncatedUsername = value.friendUsername.length > maxCharacters
+            ? value.friendUsername.substring(0, maxCharacters) + "..."
+            : value.friendUsername;
+          option.textContent = `Shared with ${truncatedUsername}`;
           listSelect.appendChild(option);
         });
       }
+      listSelect.classList.remove("loading"); // Remove loading class
+      listSelect.disabled = false; // Enable the select after loading
+
     });
 
     listSelect.addEventListener("change", () => {
