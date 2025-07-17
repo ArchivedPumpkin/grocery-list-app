@@ -5,3 +5,40 @@
 .header {
     padding: 40px 20px 20px 20px;
 }
+
+#friends-list {
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#friends-list li {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    background: #f0f5f2;
+    /* padding: 20px; */
+    border-radius: 1rem;
+    max-height: 82px;
+}
+
+#friends-list img {
+    max-width: 50px;
+    border-radius: 2rem;
+    flex: 1;
+    margin: 0 20px;
+}
+
+#friends-list span {
+    flex: 1;
+}
+
+#friends-list button {
+    border: none;
+    background: #38d7e0a6;
+    height: 100vh;
+    width: 83px;
+    cursor: pointer;
+}

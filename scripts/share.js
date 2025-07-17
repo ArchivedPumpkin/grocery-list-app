@@ -47,11 +47,21 @@ onAuthStateChanged(auth, (user) => {
         friendsList.innerHTML = ""; // Clear previous results
 
         for (let userId in users) {
-            const { username } = users[userId];
+            const { username, profilePicture } = users[userId];
             if (username && username.toLowerCase().includes(searchTerm) && userId !== user.uid) {
                 const listItem = document.createElement("li");
-                listItem.textContent = username;
 
+                // Create profile picture element
+                const profilePic = document.createElement("img");
+                profilePic.src = profilePicture || "/imgs/default-avatar.jpg"; // Default placeholder image
+                profilePic.alt = `${username}'s profile picture`;
+                profilePic.className = "profile-pic"; // Add a class for styling
+
+                // Create username element
+                const usernameElement = document.createElement("span");
+                usernameElement.textContent = username;
+
+                //Create add button
                 const addBtn = document.createElement("button");
                 addBtn.textContent = "Add";
 
@@ -99,7 +109,8 @@ onAuthStateChanged(auth, (user) => {
                 });
 
 
-
+                listItem.appendChild(profilePic);
+                listItem.appendChild(usernameElement);
                 listItem.appendChild(addBtn);
                 friendsList.appendChild(listItem);
             }
