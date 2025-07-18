@@ -7,7 +7,7 @@
 }
 
 #friends-list {
-    margin: 0 20px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
