@@ -19,9 +19,8 @@
     flex-direction: row;
     align-items: center;
     background: #f0f5f2;
-    /* padding: 20px; */
     border-radius: 1rem;
-    max-height: 82px;
+    height: 82px;
 }
 
 #friends-list img {
@@ -38,7 +37,7 @@
 #friends-list button {
     border: none;
     background: #38d7e0a6;
-    height: 100vh;
+    height: 100%;
     width: 83px;
     cursor: pointer;
 }
