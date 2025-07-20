@@ -111,7 +111,7 @@ function setupGroceriesApp(referenceInDb, user) {
       if (li) {
         li.classList.add("list-item-exit");
         li.addEventListener("animationend", () => {
-          const itemRef = ref(activeListRef, itemIdToDelete);
+          const itemRef = child(activeListRef, itemIdToDelete);
 
           remove(itemRef);
         }, { once: true });
@@ -222,7 +222,7 @@ function setupGroceriesApp(referenceInDb, user) {
 
     items.forEach((li, index) => {
       const id = li.getAttribute("data-id");
-      const itemRef = ref(activeListRef, id);
+      const itemRef = child(activeListRef, id);
       update(itemRef, { order: index + 1 });
     });
   }
