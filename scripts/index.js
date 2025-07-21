@@ -292,10 +292,7 @@ function setupGroceriesApp(referenceInDb, user) {
   async function loadUserLists(userId) {
     const listSelect = document.getElementById("grocery-list-select");
 
-    listSelect.classList.add("loading"); // Add loading class to show loading state
-    listSelect.disabled = true; // Disable the select while loading
-
-    listSelect.innerHTML = ""; // ✅ Clear old options before reloading
+    listSelect.innerHTML = ""; // Clear old options before reloading
 
     const sharedRef = ref(db, `users/${userId}/groceryLists/sharedLists`);
 

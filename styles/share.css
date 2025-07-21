@@ -34,9 +34,17 @@
     flex: 1;
 }
 
-#friends-list button {
+#friends-list .add-btn {
     border: none;
     background: #38d7e0a6;
+    height: 100%;
+    width: 83px;
+    cursor: pointer;
+}
+
+#friends-list .remove-btn {
+    border: none;
+    background: #ff4d4d;
     height: 100%;
     width: 83px;
     cursor: pointer;
