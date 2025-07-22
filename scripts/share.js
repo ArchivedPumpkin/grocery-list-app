@@ -129,6 +129,23 @@ onAuthStateChanged(auth, (user) => {
     }
 
     async function displayUsers(searchTerm = "") {
+
+        friendsList.innerHTML = ""; // Clear previous results
+
+        for (let i = 0; i < 5; i++) {
+            const skeletonItem = document.createElement("li");
+            skeletonItem.className = "skeleton-item";
+            skeletonItem.innerHTML = `
+
+            <div class="skeleton-profile-pic"></div>
+            <div class="skeleton-username"></div>
+            <div class="skeleton-button"></div>
+
+            `;
+            friendsList.appendChild(skeletonItem);
+        }
+
+
         const usersRef = ref(db, 'users');
         const snapShot = await get(usersRef);
         const users = snapShot.val();
