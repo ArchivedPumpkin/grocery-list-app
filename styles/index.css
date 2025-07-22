@@ -458,6 +458,69 @@ footer {
     /* Show a wait cursor */
 }
 
+/* Add these styles before the media queries */
+
+.skeleton-item {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-bottom: 1px solid #f0f0f2;
+}
+
+.skeleton-item:last-child {
+    border: none;
+}
+
+.skeleton-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.skeleton-checkbox {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-image: linear-gradient(90deg, #F0F5F2 25%, #E0E5E2 50%, #F0F5F2 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    margin-left: 15px;
+}
+
+.skeleton-title {
+    height: 16px;
+    width: 140px;
+    border-radius: 4px;
+    background-image: linear-gradient(90deg, #F0F5F2 25%, #E0E5E2 50%, #F0F5F2 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-description {
+    height: 14px;
+    width: 100px;
+    border-radius: 4px;
+    background-image: linear-gradient(90deg, #F0F5F2 25%, #E0E5E2 50%, #F0F5F2 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.skeleton-drag {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background-image: linear-gradient(90deg, #F0F5F2 25%, #E0E5E2 50%, #F0F5F2 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
 @keyframes shimmer {
     0% {
         background-position: 200% 0;

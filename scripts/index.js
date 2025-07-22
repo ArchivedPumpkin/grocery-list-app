@@ -58,6 +58,28 @@ function setupGroceriesApp(referenceInDb, user) {
 
   function render(groceries) {
 
+    if (!groceries) {
+      let skeletonItems = "";
+      for (let i = 0; i < 3; i++) {
+        skeletonItems += `
+         <li class="skeleton-item">
+                    <div class="skeleton-container">
+                        <div class="list__item_checkbox">
+                            <div class="skeleton-checkbox"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-description"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-drag"></div>
+                    </div>
+                </li>
+        `;
+      }
+      ulEl.innerHTML = skeletonItems;
+      return;
+    }
+
     document.querySelectorAll('.list-item-enter').forEach((el) => {
       el.classList.remove('list-item-enter');
     });
@@ -151,6 +173,9 @@ function setupGroceriesApp(referenceInDb, user) {
   let groceriesList = [];
 
   function listenToList(refToListen) {
+
+    render(null); // Show skeleton loading state first
+
     onValue(refToListen, (snapshot) => {
       if (snapshot.exists()) {
         const snapshotValues = snapshot.val();
