@@ -43,7 +43,6 @@ function setupGroceriesApp(referenceInDb, user) {
   const inputBtn = document.getElementById("input-btn");
   const ulEl = document.getElementById("ul-el");
   const deleteBtn = document.getElementById("delete-btn");
-  const logoutBtn = document.getElementById("logout-btn");
   const listSelect = document.getElementById("grocery-list-select");
 
   inputEl.addEventListener("input", function (event) {
@@ -302,17 +301,6 @@ function setupGroceriesApp(referenceInDb, user) {
       });
     });
   }
-
-  logoutBtn.addEventListener("click", async () => {
-    console.log("Logging out...");
-    try {
-      await auth.signOut();
-      console.log("User signed out successfully");
-      window.location.href = "/pages/auth.html"; // Redirect to the auth page
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  })
 
   async function loadUserLists(userId) {
     const listSelect = document.getElementById("grocery-list-select");

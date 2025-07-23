@@ -306,19 +306,9 @@ i.fa-solid.fa-ellipsis {
 
 .container-btns {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
-}
-
-#logout-btn {
-    background: white;
-    border: none;
-    display: flex;
-    gap: 5px;
-    font-size: 12px;
-    align-items: center;
-    justify-content: center;
 }
 
 @keyframes bounceUp {

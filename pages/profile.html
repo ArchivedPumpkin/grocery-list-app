@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" />
+    <link rel="stylesheet" href="/styles/index.css" />
+    <link rel="stylesheet" href="/styles/footer.css" />
+    <link rel="stylesheet" href="/styles/profile.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Profile</title>
+</head>
+
+<body>
+    <main>
+        <h1>Profile</h1>
+        <div class="profile-container">
+            <div class="profile-info">
+                <img class="profile-picture" src="/imgs/default-avatar.jpg" alt="Profile Picture" />
+                <h2 id="username"></h2>
+                <p id="handle"></p>
+            </div>
+            <div id="friends-container">
+                <h3>Friends</h3>
+                <ul id="friends-list">
+                    <!-- Friends will be dynamically added here -->
+                </ul>
+            </div>
+
+            <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>Logout</button>
+        </div>
+        <div id="footer-container"></div>
+    </main>
+
+</body>
+
+<script type="module" src="/scripts/footer.js"></script>
+<script src="https://kit.fontawesome.com/c7b137b01e.js" crossorigin="anonymous"></script>
+<script type="module" src="/scripts/profile.js"></script>
+
+</html>
