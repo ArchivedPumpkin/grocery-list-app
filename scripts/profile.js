@@ -20,6 +20,7 @@ if (location.hostname === "localhost") {
 
 const usernameEl = document.getElementById("username");
 const handleEl = document.getElementById("handle");
+const friendsList = document.getElementById("friends-list");
 const logoutBtn = document.getElementById("logout-btn");
 
 onAuthStateChanged(auth, (user) => {
@@ -48,9 +49,33 @@ onAuthStateChanged(auth, (user) => {
 
         if (userSnapshot.exists()) {
             const userData = userSnapshot.val();
+            console.log("User data:", userData);
+
             usernameEl.textContent = userData.username;
-            // Display first 5 characters of username id as handle
-            handleEl.textContent = `#${user.uid.slice(0, 5)}`;
+            handleEl.textContent = `#${user.uid.slice(0, 5)}`; // Display first 5 characters of username id as handle
+            // Display friend list inside friendsList element
+            if (userData.groceryLists?.sharedLists) {
+                friendsList.innerHTML = ""; // Clear previous list
+
+                for (const sharedId in userData.groceryLists.sharedLists) {
+                    try {
+                        const friendUsername = userData.groceryLists.sharedLists[sharedId].friendUsername;
+
+                        if (!friendUsername) {
+                            console.warn(`No username found for sharedId: ${sharedId}`);
+                            continue; // Skip if no username is found
+                        }
+
+                        const listItem = document.createElement("li");
+                        listItem.textContent = friendUsername;
+                        friendsList.appendChild(listItem);
+                    } catch (err) {
+                        console.error("Error fetching shared list data:", error);
+                        continue; // Skip this iteration if there's an error
+                    }
+                }
+
+            }
 
 
         }

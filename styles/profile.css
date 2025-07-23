@@ -60,3 +60,7 @@ ul#friends-list {
     justify-content: center;
     margin: 0 auto;
 }
+
+#friends-list li {
+    padding: 10px;
+}
