@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, child, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, child, set, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 import { firebaseConfig } from "../config.js";
@@ -304,15 +304,34 @@ function setupGroceriesApp(referenceInDb, user) {
 
   async function loadUserLists(userId) {
     const listSelect = document.getElementById("grocery-list-select");
+    const newListBtn = document.getElementById("new-list-btn");
 
     listSelect.innerHTML = ""; // Clear old options before reloading
-
-    const sharedRef = ref(db, `users/${userId}/groceryLists/sharedLists`);
 
     const personalOption = document.createElement("option");
     personalOption.value = "personal";
     personalOption.textContent = "Personal list";
     listSelect.appendChild(personalOption);
+
+    // Add user created lists
+
+    const listsRef = ref(db, `users/${userId}/groceryLists/lists`);
+
+    onValue(listsRef, (snapshot) => {
+      const lists = snapshot.val();
+
+      if (lists) {
+        Object.entries(lists).forEach(([listId, list]) => {
+          const option = document.createElement("option");
+          option.value = listId;
+          option.textContent = list.name;
+          listSelect.appendChild(option);
+        });
+      }
+    })
+
+    // Add shared lists option
+    const sharedRef = ref(db, `users/${userId}/groceryLists/sharedLists`);
 
     const maxCharacters = 8; // Maximum characters for the option text
 
@@ -320,19 +339,52 @@ function setupGroceriesApp(referenceInDb, user) {
       const sharedLists = snapshot.val();
       if (sharedLists) {
         Object.entries(sharedLists).forEach(([sharedId, value]) => {
-          const option = document.createElement("option");
-          option.value = sharedId;
-
-          // Truncate the username if it exceeds maxCharacters
-          const truncatedUsername = value.friendUsername.length > maxCharacters
-            ? value.friendUsername.substring(0, maxCharacters) + "..."
-            : value.friendUsername;
-          option.textContent = `Shared with ${truncatedUsername}`;
-          listSelect.appendChild(option);
+          if (value && value.ownerUsername) {
+            const option = document.createElement("option");
+            option.value = sharedId;
+            option.textContent = `${value.listName}`;
+            listSelect.appendChild(option);
+          }
         });
       }
       listSelect.classList.remove("loading"); // Remove loading class
       listSelect.disabled = false; // Enable the select after loading
+
+    });
+
+    newListBtn.addEventListener("click", async () => {
+      const listName = prompt("Enter list name:");
+
+      if (listName) {
+        const newListRef = push(ref(db, `groceryLists/lists`));
+        const listId = newListRef.key;
+
+        try {
+
+          await set(newListRef, {
+            name: listName,
+            createdBy: userId,
+            createdAt: Date.now(),
+            members: {
+              [userId]: true
+            },
+            items: {}
+          });
+
+          await set(ref(db, `users/${userId}/groceryLists/lists/${listId}`), {
+            name: listName,
+            owner: true
+          });
+
+          console.log("New list created:", listId);
+
+        } catch (err) {
+
+          console.error("Error creating new list:", err);
+          alert("Failed to create new list. Please try again.");
+
+        }
+      }
 
     });
 
@@ -342,7 +394,7 @@ function setupGroceriesApp(referenceInDb, user) {
       if (selectedValue === "personal") {
         activeListRef = ref(db, `users/${userId}/groceryLists/default`);
       } else {
-        activeListRef = ref(db, `groceryLists/sharedLists/${selectedValue}/items`);
+        activeListRef = ref(db, `groceryLists/lists/${selectedValue}/items`);
       }
 
       ulEl.innerHTML = ""; // Clear the current list

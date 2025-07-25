@@ -311,6 +311,25 @@ i.fa-solid.fa-ellipsis {
     margin-top: 10px;
 }
 
+.head-container-list {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#new-list-btn {
+    background: #38E07A;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @keyframes bounceUp {
     0% {
         opacity: 1;

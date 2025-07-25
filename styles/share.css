@@ -88,6 +88,35 @@
     animation: shimmer 1.5s infinite;
 }
 
+.list-select-container {
+    padding: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.list-select-container.hide {
+    display: none;
+}
+
+#list-to-share {
+    flex: 1;
+    height: 40px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #38E07A;
+    background: #F0F5F2;
+}
+
+#share-btn {
+    background: #38E07A;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 @keyframes shimmer {
     0% {
         background-position: 200% 0;

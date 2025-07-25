@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, connectDatabaseEmulator, ref, get, set, push, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, connectDatabaseEmulator, ref, get, set, push, update, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
@@ -21,6 +21,8 @@ if (location.hostname === "localhost") {
 const serachInput = document.getElementById("input-el");
 const searchBtn = document.getElementById("input-btn");
 const friendsList = document.getElementById("friends-list");
+let selectedUserId = null;
+let selectedUsername = null;
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -33,6 +35,9 @@ onAuthStateChanged(auth, (user) => {
     // Display 5 users by default
     displayUsers();
 
+    // Share list with another user
+    setupListSharing(user.uid);
+
     searchBtn.addEventListener("click", async () => {
         const searchTerm = serachInput.value.trim().toLowerCase();
         if (!searchTerm) {
@@ -44,88 +49,92 @@ onAuthStateChanged(auth, (user) => {
         await displayUsers(searchTerm);
     });
 
-    async function addFriend(addBtn, userId, username) {
-        const currentUserId = user.uid;
-        const sharedId = [currentUserId, userId].sort().join("_");
+    function setupListSharing(currentUserId) {
+        const listSelect = document.getElementById("list-to-share");
+        const shareBtn = document.getElementById("share-btn");
+        const listContainer = document.querySelector(".list-select-container");
 
-        try {
-            // ✅ Fetch current user's username from DB
-            const currentUserSnapshot = await get(ref(db, `users/${currentUserId}/username`));
-            const currentUsername = currentUserSnapshot.exists() ? currentUserSnapshot.val() : "(Unknown)";
+        const listRef = ref(db, `users/${currentUserId}/groceryLists/lists`);
 
-            // ✅ Create shared list
-            const sharedRef = ref(db, `groceryLists/sharedLists/${sharedId}`);
-            await set(sharedRef, {
-                createdBy: currentUserId,
-                members: {
-                    [currentUserId]: true,
-                    [userId]: true
-                },
-                name: `Shared with ${username}`,
-                items: {}
-            });
+        onValue(listRef, (snapShot) => {
+            const lists = snapShot.val();
+            console.log("Available lists:", lists);
+            listSelect.innerHTML = '<option value="" disabled selected>Select a list to share</option>';
 
-            // ✅ Add reference to both users
-            await set(ref(db, `users/${currentUserId}/groceryLists/sharedLists/${sharedId}`), {
-                friendId: userId,
-                friendUsername: username,
-                listId: sharedId
-            });
+            if (lists) {
+                for (let listId in lists) {
+                    const option = document.createElement("option");
+                    option.value = listId;
+                    option.textContent = lists[listId].name;
+                    listSelect.appendChild(option);
+                }
+            } else {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "No lists available";
+                listSelect.appendChild(option);
+            };
+        });
 
-            await set(ref(db, `users/${userId}/groceryLists/sharedLists/${sharedId}`), {
-                friendId: currentUserId,
-                friendUsername: currentUsername, // ✅ using value from database
-                listId: sharedId
-            });
+        shareBtn.addEventListener("click", async () => {
+            if (!selectedUserId || !selectedUsername) return;
 
-            alert("Friend and shared list added successfully");
-            displayUsers(); // Refresh the list
-        } catch (err) {
-            console.error("Failed to add friend or create shared list:", err);
-            alert("Something went wrong. Please try again.");
-        }
-    };
+            const listId = listSelect.value;
 
-    async function removeFriend(userId, username) {
-        const currentUserId = user.uid;
-        const sharedId = [currentUserId, userId].sort().join("_");
+            if (!listId) {
+                alert("Please select a list to share.");
+                return;
+            }
 
-        try {
-            // Remove from current user's shared lists
-            await set(ref(db, `users/${currentUserId}/groceryLists/sharedLists/${sharedId}`), null);
+            try {
+                const listRef = ref(db, `groceryLists/lists/${listId}`);
+                const listSnapshot = await get(listRef);
+                const listData = listSnapshot.val();
 
-            // Remove both users from the shared list
-            const sharedMembersRef = ref(db, `groceryLists/sharedLists/${sharedId}/members`);
-            const sharedMembersSnapshot = await get(sharedMembersRef);
-            const members = sharedMembersSnapshot.val() || {};
+                const ownerUsernameRef = await get(ref(db, `users/${currentUserId}/username`));
+                const ownerUsername = ownerUsernameRef.val() ?? user.displayName ?? "Unknown";
 
-            const updates = {};
-            updates[`groceryLists/sharedLists/${sharedId}/members/${currentUserId}`] = null;
-            updates[`groceryLists/sharedLists/${sharedId}/members/${userId}`] = null;
+                if (!listData) {
+                    alert("Selected list does not exist.");
+                    return;
+                }
 
-            await update(ref(db), updates);
+                await update(listRef, {
+                    [`members/${selectedUserId}`]: true
+                })
 
-            alert(`Friend ${username} removed successfully`);
-            displayUsers(); // Refresh the list
-        } catch (err) {
-            console.error("Failed to remove friend or shared list:", err);
-            alert("Something went wrong. Please try again.");
-        }
+                const sharedListRef = ref(db, `users/${selectedUserId}/groceryLists/sharedLists/${listId}`);
+                await set(sharedListRef, {
+                    ownerId: user.uid,
+                    ownerUsername: ownerUsername,
+                    listName: listData.name
+                })
+                alert(`List "${listData.name}" shared with ${selectedUsername}.`);
+                document.querySelector(".list-select-container").classList.add("hide");
+
+            } catch (err) {
+                console.error("Error sharing list:", err);
+                alert("Failed to share the list. Please try again.");
+            }
+        })
     }
 
     function setupAddRemoveButton(addBtn, isFriend, userId, username) {
-        if (isFriend) {
-            addBtn.textContent = "Remove";
-            addBtn.classList.remove("add-btn");
-            addBtn.classList.add("remove-btn");
-            addBtn.addEventListener("click", () => removeFriend(userId, username));
-        }
-        else {
-            addBtn.textContent = "Add";
-            addBtn.classList.add("add-btn");
-            addBtn.addEventListener("click", () => addFriend(addBtn, userId, username));
-        }
-        return addBtn;
+        addBtn.className = isFriend ? "remove-btn" : "add-btn";
+        addBtn.textContent = isFriend ? "Remove" : "Share";
+
+        addBtn.addEventListener("click", () => {
+            if (!isFriend) {
+                selectedUserId = userId;
+                selectedUsername = username;
+
+                document.querySelector(".list-select-container").classList.remove("hide");
+
+            }
+            else {
+                removeFriend(userId, username);
+            }
+        })
     }
 
     async function displayUsers(searchTerm = "") {
