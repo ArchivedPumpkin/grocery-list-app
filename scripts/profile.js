@@ -53,29 +53,32 @@ onAuthStateChanged(auth, (user) => {
 
             usernameEl.textContent = userData.username;
             handleEl.textContent = `#${user.uid.slice(0, 5)}`; // Display first 5 characters of username id as handle
-            // Display friend list inside friendsList element
-            if (userData.groceryLists?.sharedLists) {
-                friendsList.innerHTML = ""; // Clear previous list
 
-                for (const sharedId in userData.groceryLists.sharedLists) {
-                    try {
-                        const friendUsername = userData.groceryLists.sharedLists[sharedId].friendUsername;
+            // Display shared lists if any
+            const sharedListsRef = ref(db, `users/${user.uid}/groceryLists/sharedLists`)
+            const sharedListsSnapshot = await get(sharedListsRef);
 
-                        if (!friendUsername) {
-                            console.warn(`No username found for sharedId: ${sharedId}`);
-                            continue; // Skip if no username is found
-                        }
+            if (sharedListsSnapshot.exists()) {
+                const sharedLists = sharedListsSnapshot.val();
+                console.log("Shared lists:", sharedLists);
 
-                        const listItem = document.createElement("li");
-                        listItem.textContent = friendUsername;
-                        friendsList.appendChild(listItem);
-                    } catch (err) {
-                        console.error("Error fetching shared list data:", error);
-                        continue; // Skip this iteration if there's an error
-                    }
+                for (let sharedId in sharedLists) {
+                    const listData = sharedLists[sharedId];
+
+                    const membersList = Object.values(listData.members).map(member => member.username).join(', ');
+                    console.log("Members in shared list:", membersList);
+
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                    <div >
+                        <p>${listData.listName}<p>
+                        <p>${membersList}</p>
+                    <div>`;
+                    friendsList.appendChild(listItem);
+
                 }
-
             }
+
 
 
         }

@@ -91,22 +91,27 @@ onAuthStateChanged(auth, (user) => {
                 const listSnapshot = await get(listRef);
                 const listData = listSnapshot.val();
 
-                const ownerUsernameRef = await get(ref(db, `users/${currentUserId}/username`));
-                const ownerUsername = ownerUsernameRef.val() ?? user.displayName ?? "Unknown";
-
                 if (!listData) {
                     alert("Selected list does not exist.");
                     return;
                 }
 
+                const existingMembers = listData.members || {};
+
+                const updatedMembers = {
+                    ...existingMembers,
+                    [selectedUserId]: {
+                        username: selectedUsername
+                    }
+                }
+
                 await update(listRef, {
-                    [`members/${selectedUserId}`]: true
+                    members: updatedMembers
                 })
 
                 const sharedListRef = ref(db, `users/${selectedUserId}/groceryLists/sharedLists/${listId}`);
                 await set(sharedListRef, {
-                    ownerId: user.uid,
-                    ownerUsername: ownerUsername,
+                    members: updatedMembers,
                     listName: listData.name
                 })
                 alert(`List "${listData.name}" shared with ${selectedUsername}.`);

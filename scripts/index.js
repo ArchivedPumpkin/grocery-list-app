@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, child, set, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, ref, get, push, onValue, remove, child, set, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 import { firebaseConfig } from "../config.js";
@@ -359,21 +359,29 @@ function setupGroceriesApp(referenceInDb, user) {
         const newListRef = push(ref(db, `groceryLists/lists`));
         const listId = newListRef.key;
 
+        const userRef = ref(db, `users/${userId}/username`);
+        const userSnapshot = await get(userRef);
+        const ownerUsername = userSnapshot.val() || user.displayName || "Unknown";
+
         try {
 
           await set(newListRef, {
             name: listName,
             createdBy: userId,
-            createdAt: Date.now(),
+            createdAt: new Date(Date.now()).toLocaleDateString(),
             members: {
-              [userId]: true
+              [userId]: {
+                username: ownerUsername,
+                isOwner: true
+              }
             },
             items: {}
           });
 
           await set(ref(db, `users/${userId}/groceryLists/lists/${listId}`), {
             name: listName,
-            owner: true
+            owner: true,
+            username: ownerUsername
           });
 
           console.log("New list created:", listId);
