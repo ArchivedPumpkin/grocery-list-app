@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, connectDatabaseEmulator, ref, get, set, push, update, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, connectDatabaseEmulator, ref, get, set, push, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
@@ -49,6 +49,201 @@ onAuthStateChanged(auth, (user) => {
         await displayUsers(searchTerm);
     });
 
+    async function sendListSharingRequest(listId, currentUserId, selectedUserId, selectedUsername) {
+        try {
+            const listRef = ref(db, `groceryLists/lists/${listId}`);
+            const listSnapshot = await get(listRef);
+            const listData = listSnapshot.val();
+
+            if (!listData) {
+                alert("Selected list does not exist.");
+                return;
+            }
+
+            // Get current user's username
+            const userSnapshot = await get(ref(db, `users/${currentUserId}`));
+            const userData = userSnapshot.val();
+            const fromUsername = userData.username || 'Unknown User';
+
+            const requestRef = ref(db, `users/${selectedUserId}/pendingRequests/${listId}`);
+            await set(requestRef, {
+                listId: listId,
+                listName: listData.name,
+                fromUserId: currentUserId,
+                fromUsername: fromUsername,
+                timestamp: new Date(Date.now()).toLocaleDateString(),
+                status: 'pending'
+            });
+
+            alert(`Sharing request sent to ${selectedUsername}`);
+            document.querySelector(".list-select-container").classList.add("hide");
+
+        } catch (err) {
+            console.error("Error sending share request:", err);
+            alert("Failed to send sharing request. Please try again.");
+        }
+    }
+
+    async function handleListSharingAccept(listId, selectedUserId, selectedUsername) {
+        console.log('Starting list sharing acceptance process...', {
+            listId,
+            selectedUserId,
+            selectedUsername
+        });
+
+        try {
+            const listRef = ref(db, `groceryLists/lists/${listId}`);
+            console.log('Fetching list data...');
+            const listSnapshot = await get(listRef);
+            const listData = listSnapshot.val();
+            console.log('List data retrieved:', listData);
+
+            const existingMembers = listData.members || {};
+            const updateMembers = {
+                ...existingMembers,
+                [selectedUserId]: {
+                    username: selectedUsername
+                }
+            }
+            console.log('Updated members structure:', updateMembers);
+
+            console.log('Updating main list with new member...');
+            await update(listRef, {
+                members: updateMembers
+            });
+
+            console.log('Adding list to user\'s shared lists...');
+            const sharedListRef = ref(db, `users/${selectedUserId}/groceryLists/sharedLists/${listId}`);
+            await set(sharedListRef, {
+                members: updateMembers,
+                listName: listData.name,
+                items: listData.items || {},
+                shared: true
+            });
+
+            console.log('Removing pending request...');
+            const requestRef = ref(db, `users/${selectedUserId}/pendingRequests/${listId}`);
+            await remove(requestRef);
+
+            console.log('List sharing acceptance completed successfully');
+            return true;
+
+        } catch (err) {
+            console.error('Error in handleListSharingAccept:', err);
+            console.error('Error details:', {
+                message: err.message,
+                code: err.code,
+                stack: err.stack
+            });
+            return false;
+        }
+    }
+
+    function createNotificationElement(request, listId) {
+        const notificationItem = document.createElement('div');
+        notificationItem.className = 'notification-item';
+        notificationItem.dataset.listId = listId;
+
+        const message = document.createElement('div');
+        message.className = 'notification-message';
+        message.textContent = `${request.fromUsername} wants to share "${request.listName}" with you`;
+
+        const actions = document.createElement('div');
+        actions.className = 'notification-actions';
+
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.textContent = 'Accept';
+
+        const rejectBtn = document.createElement('button');
+        rejectBtn.className = 'reject-btn';
+        rejectBtn.textContent = 'Reject';
+
+        actions.appendChild(acceptBtn);
+        actions.appendChild(rejectBtn);
+        notificationItem.appendChild(message);
+        notificationItem.appendChild(actions);
+
+        return notificationItem;
+    }
+
+    function updateNotificationCount() {
+        const count = document.querySelectorAll('.notification-item').length;
+        const countElement = document.querySelector('.notification-count');
+        countElement.textContent = count;
+
+        // Show/hide the container based on count
+        const container = document.querySelector('.notifications-container');
+        container.style.display = count > 0 ? 'block' : 'none';
+    }
+
+    // Modify your setupPendingRequestsListener function
+    function setupPendingRequestsListener(userId) {
+        const pendingRequestsRef = ref(db, `users/${userId}/pendingRequests`);
+        const notificationsList = document.querySelector('.notifications-list');
+
+        onValue(pendingRequestsRef, async (snapshot) => {
+            const requests = snapshot.val();
+
+            const userSnapshot = await get(ref(db, `users/${userId}`));
+            const userData = userSnapshot.val();
+            const currentUsername = userData.username;
+
+            notificationsList.innerHTML = ''; // Clear existing notifications
+
+            if (requests) {
+                Object.entries(requests).forEach(([listId, request]) => {
+                    if (request.status === 'pending') {
+                        const notificationElement = createNotificationElement(request, listId);
+
+                        // Setup accept button
+                        notificationElement.querySelector('.accept-btn').addEventListener('click', async () => {
+                            console.log('Accept button clicked for list:', listId);
+                            notificationElement.classList.add('loading');
+
+                            console.log('Attempting to accept sharing request...');
+                            const success = await handleListSharingAccept(
+                                listId,
+                                userId,
+                                currentUsername
+                            );
+
+                            if (success) {
+                                console.log('Successfully accepted sharing request for list:', listId);
+                                notificationElement.remove();
+                                updateNotificationCount();
+                            } else {
+                                console.error('Failed to accept sharing request for list:', listId);
+                                notificationElement.classList.remove('loading');
+                            }
+                        });
+
+                        // Setup reject button
+                        notificationElement.querySelector('.reject-btn').addEventListener('click', async () => {
+                            console.log('Reject button clicked for list:', listId);
+                            notificationElement.classList.add('loading');
+
+                            try {
+                                console.log('Attempting to remove request from database...');
+                                await remove(ref(db, `users/${userId}/pendingRequests/${listId}`));
+                                console.log('Successfully removed request from database');
+                                notificationElement.remove();
+                                updateNotificationCount();
+                            } catch (error) {
+                                console.error('Error removing request:', error);
+                                notificationElement.classList.remove('loading');
+                            }
+                        });
+
+                        notificationsList.appendChild(notificationElement);
+                    }
+                });
+            }
+
+            updateNotificationCount();
+        });
+    }
+
     function setupListSharing(currentUserId) {
         const listSelect = document.getElementById("list-to-share");
         const shareBtn = document.getElementById("share-btn");
@@ -87,39 +282,10 @@ onAuthStateChanged(auth, (user) => {
             }
 
             try {
-                const listRef = ref(db, `groceryLists/lists/${listId}`);
-                const listSnapshot = await get(listRef);
-                const listData = listSnapshot.val();
-
-                if (!listData) {
-                    alert("Selected list does not exist.");
-                    return;
-                }
-
-                const existingMembers = listData.members || {};
-
-                const updatedMembers = {
-                    ...existingMembers,
-                    [selectedUserId]: {
-                        username: selectedUsername
-                    }
-                }
-
-                await update(listRef, {
-                    members: updatedMembers
-                })
-
-                const sharedListRef = ref(db, `users/${selectedUserId}/groceryLists/sharedLists/${listId}`);
-                await set(sharedListRef, {
-                    members: updatedMembers,
-                    listName: listData.name
-                })
-                alert(`List "${listData.name}" shared with ${selectedUsername}.`);
-                document.querySelector(".list-select-container").classList.add("hide");
-
+                await sendListSharingRequest(listId, currentUserId, selectedUserId, selectedUsername);
             } catch (err) {
-                console.error("Error sharing list:", err);
-                alert("Failed to share the list. Please try again.");
+                console.error("Error sending sharing request:", err);
+                alert("Failed to send sharing request. Please try again.");
             }
         })
     }
@@ -247,7 +413,7 @@ onAuthStateChanged(auth, (user) => {
         }
 
     }
-
+    setupPendingRequestsListener(user.uid);
 });
 
 

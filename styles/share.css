@@ -117,6 +117,92 @@
     cursor: pointer;
 }
 
+/* Notifications Container */
+.notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.notifications-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.notification-count {
+    background: #ff4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.notifications-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-message {
+    font-size: 14px;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.accept-btn,
+.reject-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.accept-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.reject-btn {
+    background: #ff4444;
+    color: white;
+}
+
+.accept-btn:hover,
+.reject-btn:hover {
+    opacity: 0.9;
+}
+
+/* Loading state */
+.notification-item.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
 @keyframes shimmer {
     0% {
         background-position: 200% 0;

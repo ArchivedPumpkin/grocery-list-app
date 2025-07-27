@@ -43,7 +43,6 @@ function setupGroceriesApp(referenceInDb, user) {
   const inputBtn = document.getElementById("input-btn");
   const ulEl = document.getElementById("ul-el");
   const deleteBtn = document.getElementById("delete-btn");
-  const listSelect = document.getElementById("grocery-list-select");
 
   inputEl.addEventListener("input", function (event) {
     if (event.target.value.trim() !== "") {
@@ -339,7 +338,7 @@ function setupGroceriesApp(referenceInDb, user) {
       const sharedLists = snapshot.val();
       if (sharedLists) {
         Object.entries(sharedLists).forEach(([sharedId, value]) => {
-          if (value && value.ownerUsername) {
+          if (value && value.listName) {
             const option = document.createElement("option");
             option.value = sharedId;
             option.textContent = `${value.listName}`;
