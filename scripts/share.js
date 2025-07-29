@@ -177,7 +177,6 @@ onAuthStateChanged(auth, (user) => {
         container.style.display = count > 0 ? 'block' : 'none';
     }
 
-    // Modify your setupPendingRequestsListener function
     function setupPendingRequestsListener(userId) {
         const pendingRequestsRef = ref(db, `users/${userId}/pendingRequests`);
         const notificationsList = document.querySelector('.notifications-list');

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" />
+    <link rel="stylesheet" href="/styles/index.css" />
+    <link rel="stylesheet" href="/styles/footer.css" />
+    <link rel="stylesheet" href="/styles/profile.css" />
+    <link rel="stylesheet" href="/styles/recipes.css" />
+    <link rel="apple-touch-icon" sizes="180x180" href="imgs/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Recipes</title>
+</head>
+
+<body>
+    <main>
+        <div class="recipe-header-container">
+            <h1>Recipes</h1>
+            <button class="recipe-add" id="new-recipe-btn"><i class="fa-solid fa-plus"></i></button>
+        </div>
+
+        <div class="recipes-container">
+            <div class="recipe-card">
+                <h2>My Recipes</h2>
+            </div>
+            <ul id="recipes-list">
+                <!-- Recipes will be dynamically added here -->
+            </ul>
+        </div>
+        <div id="footer-container"></div>
+    </main>
+
+</body>
+
+<script type="module" src="/scripts/footer.js"></script>
+<script src="https://kit.fontawesome.com/c7b137b01e.js" crossorigin="anonymous"></script>
+<script type="module" src="/scripts/recipes.js"></script>
+
+</html>
