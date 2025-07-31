@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getDatabase, connectDatabaseEmulator, ref, get, set, push, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+import { getDatabase, connectDatabaseEmulator, onValue, ref, get, set, push, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
@@ -29,6 +29,7 @@ onAuthStateChanged(auth, async (user) => {
     const userNameRef = ref(db, `users/${user.uid}/username`);
     const userNameSnapshot = await get(userNameRef);
     const userName = userNameSnapshot.exists() ? userNameSnapshot.val() : "Guest";
+    const userRecipesRef = ref(db, "groceryLists/recipes");
 
     const addRecipeBtn = document.getElementById("new-recipe-btn");
     const recipesList = document.getElementById("recipes-list");
@@ -56,5 +57,67 @@ onAuthStateChanged(auth, async (user) => {
             }
         }
     })
+
+    function listenToRecipes(recipesRef) {
+        render(null);
+
+        onValue(recipesRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const recipes = snapshot.val();
+                console.log("Recipes:", recipes);
+
+                render(recipes);
+            } else {
+                render([]);
+                console.log("No recipes found");
+            }
+        })
+    }
+
+    listenToRecipes(userRecipesRef);
+
+    function render(recipes) {
+        if (!recipes) {
+            let skeletonRecipes = "";
+            for (let i = 0; i < 3; i++) {
+                skeletonRecipes += `
+                    <li class="skeleton-item">
+                    <div class="skeleton-container">
+                        <div class="list__item_checkbox">
+                            <div class="skeleton-checkbox"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-description"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-drag"></div>
+                    </div>
+                </li>
+                `;
+            }
+
+            recipesList.innerHTML = skeletonRecipes;
+            return;
+        }
+
+        recipesList.innerHTML = "";
+
+        for (let recipeId in recipes) {
+            const recipe = recipes[recipeId];
+            const listItem = document.createElement("li");
+            listItem.classList.add("recipe-item");
+            listItem.innerHTML = `
+            <div class="recipe-details">
+                <h3 class="recipe-title">${recipe.name}</h3>
+                <p class="recipe-description">${recipe.description ?? ''}</p>
+            </div>
+            <div class="recipe-actions">
+                <button class="edit-recipe-btn">Edit</button>
+                <button class="delete-recipe-btn">Delete</button>
+            </div>
+            `;
+            recipesList.appendChild(listItem);
+        }
+    }
 
 });

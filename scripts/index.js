@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getDatabase, ref, get, push, onValue, remove, child, set, connectDatabaseEmulator, update } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-
 import { firebaseConfig } from "../config.js";
 
 const app = initializeApp(firebaseConfig);
