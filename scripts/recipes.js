@@ -112,12 +112,44 @@ onAuthStateChanged(auth, async (user) => {
                 <p class="recipe-description">${recipe.description ?? ''}</p>
             </div>
             <div class="recipe-actions">
-                <button class="edit-recipe-btn">Edit</button>
-                <button class="delete-recipe-btn">Delete</button>
+                <button class="edit-recipe-btn" data-recipe-id="${recipeId}">Edit</button>
+                <button class="delete-recipe-btn" data-recipe-id="${recipeId}">Delete</button>
             </div>
             `;
+            const editBtn = listItem.querySelector(".edit-recipe-btn");
+            const deleteBtn = listItem.querySelector(".delete-recipe-btn");
+
+            editBtn.addEventListener("click", () => showEditRecipe(recipeId, recipe));
+
             recipesList.appendChild(listItem);
         }
+    }
+
+    function showEditRecipe(recipeId, recipe) {
+        document.getElementById("content-container").style.display = "none";
+        const mainContainer = document.getElementById("main-content");
+
+        const editSection = document.createElement("div");
+        editSection.classList.add("edit-recipe-section");
+        editSection.innerHTML = `
+        <div class="edit-recipe-header">
+            <h1>${recipe.name}</h1>
+            <div id="instructions-container">
+                <div id="instructions-content">${recipe.instructions}</div>
+                <textarea id="instructions-input" style="display:none;">${recipe.instructions}</textarea>
+            </div>
+            <div id="ingredients-container">
+                <input type="text" id="ingredient-input" placeholder="Add ingredient" style="display:none;"/>
+                <ul id="ingredients-list">
+                    
+                </ul>
+            </div>
+            <button id="add-ingredient-btn">Edit</button>
+            
+        </div>
+        `;
+
+        mainContainer.appendChild(editSection);
     }
 
 });

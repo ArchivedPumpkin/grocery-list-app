@@ -18,18 +18,22 @@
 
 <body>
     <main>
-        <div class="recipe-header-container">
-            <h1>Recipes</h1>
-            <button class="recipe-add" id="new-recipe-btn"><i class="fa-solid fa-plus"></i></button>
-        </div>
+        <div id="main-content">
+            <div id="content-container">
+                <div class="recipe-header-container">
+                    <h1>Recipes</h1>
+                    <button class="recipe-add" id="new-recipe-btn"><i class="fa-solid fa-plus"></i></button>
+                </div>
 
-        <div class="recipes-container">
-            <div class="recipe-card">
-                <h2>My Recipes</h2>
+                <div class="recipes-container">
+                    <div class="recipe-card">
+                        <h2>My Recipes</h2>
+                    </div>
+                    <ul id="recipes-list">
+                        <!-- Recipes will be dynamically added here -->
+                    </ul>
+                </div>
             </div>
-            <ul id="recipes-list">
-                <!-- Recipes will be dynamically added here -->
-            </ul>
         </div>
         <div id="footer-container"></div>
     </main>
