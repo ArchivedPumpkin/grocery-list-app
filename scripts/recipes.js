@@ -136,20 +136,61 @@ onAuthStateChanged(auth, async (user) => {
             <h1>${recipe.name}</h1>
             <div id="instructions-container">
                 <div id="instructions-content">${recipe.instructions}</div>
-                <textarea id="instructions-input" style="display:none;">${recipe.instructions}</textarea>
+                <textarea id="instructions-input">${recipe.instructions}</textarea>
             </div>
             <div id="ingredients-container">
-                <input type="text" id="ingredient-input" placeholder="Add ingredient" style="display:none;"/>
+                <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
+                <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
+                <button id="add-ingredient-btn">Add</button>
                 <ul id="ingredients-list">
-                    
+                
                 </ul>
             </div>
             <button id="add-ingredient-btn">Edit</button>
-            
+            <button id="save-recipe-btn">Save</button>
+            <button id="cancel-edit-btn" style="display: none;">Cancel</button>
         </div>
         `;
 
         mainContainer.appendChild(editSection);
+
+        const saveRecipeBtn = document.getElementById("save-recipe-btn");
+        saveRecipeBtn.addEventListener("click", async () => {
+            const instructions = document.getElementById("instructions-input").value;
+
+            try {
+                await update(ref(db, `groceryLists/recipes/${recipeId}`), {
+                    instructions: instructions
+                });
+
+                document.getElementById("instructions-content").textContent = instructions;
+                console.log("Recipe updated successfully");
+
+            } catch (error) {
+                console.error("Error updating recipe:", error);
+            }
+        })
+
+        const addIngredientBtn = document.getElementById("add-ingredient-btn");
+        addIngredientBtn.addEventListener("click", () => {
+            const ingredientInput = document.getElementById("ingredient-input").value.trim();
+            const ingredientInstructionsInput = document.getElementById("ingredient-instructions-input").value;
+
+            if (ingredientInput) {
+                const ingredientsList = document.getElementById("ingredients-list");
+
+                try {
+                    const newIngredientRef = push(ref(db, `groceryLists/recipes/${recipeId}/ingredients`));
+                    set(newIngredientRef, {
+                        name: ingredientInput,
+                        instructions: ingredientInstructionsInput || "",
+                    })
+                } catch (error) {
+                    console.error("Error adding ingredient:", error);
+                }
+            }
+        })
     }
+
 
 });
