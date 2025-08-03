@@ -119,7 +119,30 @@ onAuthStateChanged(auth, async (user) => {
             const editBtn = listItem.querySelector(".edit-recipe-btn");
             const deleteBtn = listItem.querySelector(".delete-recipe-btn");
 
-            editBtn.addEventListener("click", () => showEditRecipe(recipeId, recipe));
+            editBtn.addEventListener("click", () => {
+                showEditRecipe(recipeId, recipe);
+
+                const ingredientsListRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
+                onValue(ingredientsListRef, (snapshot) => {
+                    const ingredientsList = document.getElementById("ingredients-list");
+                    ingredientsList.innerHTML = ""; // Clear existing ingredients
+
+                    if (snapshot.exists()) {
+                        const ingredients = snapshot.val();
+                        console.log("Ingredients:", ingredients);
+
+                        for (let ingredientId in ingredients) {
+                            const ingredient = ingredients[ingredientId];
+                            const ingredientItem = document.createElement("li");
+                            ingredientItem.innerHTML = `
+                            <span class="ingredient-name">${ingredient.name}</span>
+                            <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
+                            `;
+                            ingredientsList.appendChild(ingredientItem);
+                        }
+                    }
+                })
+            });
 
             recipesList.appendChild(listItem);
         }
@@ -146,7 +169,7 @@ onAuthStateChanged(auth, async (user) => {
                 
                 </ul>
             </div>
-            <button id="add-ingredient-btn">Edit</button>
+            <button id="edit-list-btn">Edit</button>
             <button id="save-recipe-btn">Save</button>
             <button id="cancel-edit-btn" style="display: none;">Cancel</button>
         </div>
@@ -185,6 +208,7 @@ onAuthStateChanged(auth, async (user) => {
                         name: ingredientInput,
                         instructions: ingredientInstructionsInput || "",
                     })
+
                 } catch (error) {
                     console.error("Error adding ingredient:", error);
                 }
