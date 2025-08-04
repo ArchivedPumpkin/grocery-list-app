@@ -119,6 +119,18 @@ onAuthStateChanged(auth, async (user) => {
             const editBtn = listItem.querySelector(".edit-recipe-btn");
             const deleteBtn = listItem.querySelector(".delete-recipe-btn");
 
+            deleteBtn.addEventListener("click", async () => {
+                const confirmDelete = confirm("Are you sure you want to delete this recipe?");
+                if (confirmDelete) {
+                    try {
+                        await set(ref(db, `groceryLists/recipes/${recipeId}`), null);
+                        console.log("Recipe deleted successfully");
+                    } catch (error) {
+                        console.error("Error deleting recipe:", error);
+                    }
+                }
+            })
+
             editBtn.addEventListener("click", () => {
                 showEditRecipe(recipeId, recipe);
 
@@ -158,13 +170,15 @@ onAuthStateChanged(auth, async (user) => {
         <div class="edit-recipe-header">
             <h1>${recipe.name}</h1>
             <div id="instructions-container">
-                <div id="instructions-content">${recipe.instructions}</div>
-                <textarea id="instructions-input">${recipe.instructions}</textarea>
+                <div id="instructions-content" placeholder="Enter instructions">${recipe.instructions}</div>
+                <textarea id="instructions-input" class="hide" placeholder="Enter instructions">${recipe.instructions}</textarea>
             </div>
             <div id="ingredients-container">
-                <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
-                <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
-                <button id="add-ingredient-btn">Add</button>
+                <div id="ingredients-input-container" class="hide">
+                    <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
+                    <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
+                    <button id="add-ingredient-btn">Add</button>
+                </div>
                 <ul id="ingredients-list">
                 
                 </ul>
@@ -192,7 +206,30 @@ onAuthStateChanged(auth, async (user) => {
             } catch (error) {
                 console.error("Error updating recipe:", error);
             }
+            toggleEditState(false);
         })
+
+
+        function toggleEditState(isEditing) {
+            const instructionsEdit = document.getElementById("instructions-input");
+            const ingredientsEdit = document.getElementById("ingredients-input-container");
+            const instructionsContent = document.getElementById("instructions-content");
+
+            if (isEditing) {
+                instructionsEdit.classList.remove("hide");
+                ingredientsEdit.classList.remove("hide");
+                instructionsContent.classList.add("hide");
+            } else {
+                instructionsEdit.classList.add("hide");
+                ingredientsEdit.classList.add("hide");
+                instructionsContent.classList.remove("hide");
+            }
+
+        }
+
+        const editListBtn = document.getElementById("edit-list-btn");
+        editListBtn.addEventListener("click", () => toggleEditState(true));
+
 
         const addIngredientBtn = document.getElementById("add-ingredient-btn");
         addIngredientBtn.addEventListener("click", () => {
