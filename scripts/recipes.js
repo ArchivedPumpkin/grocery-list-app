@@ -3,6 +3,8 @@ import { getDatabase, connectDatabaseEmulator, onValue, ref, get, set, push, upd
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
+import { setupSwipeWithHammer, setupEllipsisRevealDelete } from './utils.js';
+
 const app = initializeApp(firebaseConfig);
 let auth;
 let db;
@@ -107,17 +109,23 @@ onAuthStateChanged(auth, async (user) => {
             const listItem = document.createElement("li");
             listItem.classList.add("recipe-item");
             listItem.innerHTML = `
-            <div class="recipe-details">
-                <h3 class="recipe-title">${recipe.name}</h3>
-                <p class="recipe-description">${recipe.description ?? ''}</p>
+            <div class="swipe-wrapper">
+                <div class="swipe-content">
+                    <div class="recipe-details" data-recipe-id="${recipeId}">
+                        <div class="recipe-info">
+                            <i class="fa-solid fa-list "></i>
+                            <h3 class="recipe-title">${recipe.name}</h3>
+                            <p class="recipe-description">${recipe.description ?? ''}</p>
+                        </div>
+                        <i class="fa-solid fa-ellipsis drag-handle" aria-hidden="true"></i>
+                    </div>
+                </div>
+            <button class="delete-btn-items fa fa-trash" title="Delete item" data-delete-id="-OX-7ngr0OZqvCcLYrsT" aria-hidden="true"></button>
             </div>
-            <div class="recipe-actions">
-                <button class="edit-recipe-btn" data-recipe-id="${recipeId}">Edit</button>
-                <button class="delete-recipe-btn" data-recipe-id="${recipeId}">Delete</button>
-            </div>
+                
             `;
-            const editBtn = listItem.querySelector(".edit-recipe-btn");
-            const deleteBtn = listItem.querySelector(".delete-recipe-btn");
+            const viewBtn = listItem.querySelector(".recipe-info");
+            const deleteBtn = listItem.querySelector(".delete-btn-items");
 
             deleteBtn.addEventListener("click", async () => {
                 const confirmDelete = confirm("Are you sure you want to delete this recipe?");
@@ -131,10 +139,10 @@ onAuthStateChanged(auth, async (user) => {
                 }
             })
 
-            editBtn.addEventListener("click", () => {
+            viewBtn.addEventListener("click", () => {
                 showEditRecipe(recipeId, recipe);
 
-                const ingredientsListRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
+                const ingredientsListRef = ref(db, `groceryLists / recipes / ${recipeId}/ingredients`);
                 onValue(ingredientsListRef, (snapshot) => {
                     const ingredientsList = document.getElementById("ingredients-list");
                     ingredientsList.innerHTML = ""; // Clear existing ingredients
@@ -158,6 +166,8 @@ onAuthStateChanged(auth, async (user) => {
 
             recipesList.appendChild(listItem);
         }
+        setupSwipeWithHammer();
+        setupEllipsisRevealDelete(recipesList);
     }
 
     function showEditRecipe(recipeId, recipe) {

@@ -3,7 +3,11 @@
 }
 
 .recipes-container {
-    padding: 16px;
+    padding: 16px 0;
+}
+
+.recipe-card {
+    padding: 0 16px;
 }
 
 .recipe-add {
@@ -27,6 +31,39 @@
 
 div#main-content {
     flex: 1 1 auto;
+}
+
+.recipe-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    height: 80px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+i.fa-solid.fa-list {
+    font-size: 25px;
+    background: #F0F5F2;
+    padding: 17px;
+    border-radius: 8px;
+    color: #638773;
+}
+
+i.fa-solid.fa-ellipsis {
+    width: 40px;
+}
+
+h3.recipe-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.recipe-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .skeleton-item {

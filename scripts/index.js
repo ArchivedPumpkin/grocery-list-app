@@ -3,6 +3,8 @@ import { getDatabase, ref, get, push, onValue, remove, child, set, connectDataba
 import { getAuth, onAuthStateChanged, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { firebaseConfig } from "../config.js";
 
+import { setupSwipeWithHammer, setupEllipsisRevealDelete } from './utils.js';
+
 const app = initializeApp(firebaseConfig);
 let auth;
 let db;
@@ -184,7 +186,7 @@ function setupGroceriesApp(referenceInDb, user) {
         render(groceries);
         setupSortable();
         setupSwipeWithHammer();
-        setupEllipsisRevealDelete();
+        setupEllipsisRevealDelete(ulEl);
       } else {
         groceriesList = [];
         render([]);
@@ -246,57 +248,6 @@ function setupGroceriesApp(referenceInDb, user) {
       const id = li.getAttribute("data-id");
       const itemRef = child(activeListRef, id);
       update(itemRef, { order: index + 1 });
-    });
-  }
-
-  function setupSwipeWithHammer() {
-    const swipeItems = document.querySelectorAll('.swipe-wrapper');
-
-    swipeItems.forEach(wrapper => {
-      const hammer = new Hammer(wrapper);
-
-      hammer.on('swipeleft', () => {
-        // Close others
-        document.querySelectorAll('.swipe-wrapper.swiped').forEach(el => {
-          if (el !== wrapper) el.classList.remove('swiped');
-        });
-        wrapper.classList.add('swiped');
-      });
-
-      hammer.on('swiperight', () => {
-        wrapper.classList.remove('swiped');
-      });
-    });
-
-    document.addEventListener('touchstart', (e) => {
-      const isSwipe = e.target.closest('.swipe-wrapper');
-      if (!isSwipe) {
-        document.querySelectorAll('.swipe-wrapper.swiped')
-          .forEach(el => el.classList.remove('swiped'));
-      }
-    });
-
-  }
-
-  function setupEllipsisRevealDelete() {
-    ulEl.querySelectorAll('.drag-handle').forEach(handle => {
-
-      handle.addEventListener('click', (e) => {
-        const swipeWrapper = handle.closest('.swipe-wrapper');
-        if (!swipeWrapper) return;
-
-        // If already swiped, toggle off
-        if (swipeWrapper.classList.contains('swiped')) {
-          swipeWrapper.classList.remove('swiped');
-        } else {
-          // Close all other swiped elements
-          document.querySelectorAll('.swipe-wrapper.swiped').forEach(el => {
-            if (el !== swipeWrapper) el.classList.remove('swiped');
-          });
-          swipeWrapper.classList.add('swiped');
-        }
-        e.stopPropagation();
-      });
     });
   }
 

@@ -1,0 +1,40 @@
+/* Wrapper holds swipeable content + button */
+.swipe-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* The actual content that will slide */
+.swipe-content {
+    background: white;
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+/* The delete button slides in */
+.delete-btn-items {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 60px;
+    background: #e85b06;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+/* When swiped left, show button */
+.swiped .swipe-content {
+    transform: translateX(-60px);
+}
+
+.swiped .delete-btn-items {
+    transform: translateX(0);
+}
