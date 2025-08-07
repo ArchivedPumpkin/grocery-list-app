@@ -190,16 +190,26 @@ onAuthStateChanged(auth, async (user) => {
                     <button id="add-ingredient-btn">Add</button>
                 </div>
                 <ul id="ingredients-list">
-                
+
                 </ul>
             </div>
             <button id="edit-list-btn">Edit</button>
-            <button id="save-recipe-btn">Save</button>
-            <button id="cancel-edit-btn" style="display: none;">Cancel</button>
+            <button id="save-recipe-btn" class="hide">Save</button>
+            <button id="cancel-edit-btn" class="hide">Cancel</button>
         </div>
         `;
 
         mainContainer.appendChild(editSection);
+
+        Object.entries(recipe.ingredients).forEach(([ingredientId, ingredient]) => {
+            const ingredientsList = document.getElementById("ingredients-list");
+            const ingredientItem = document.createElement("li");
+            ingredientItem.innerHTML = `
+            <span class="ingredient-name">${ingredient.name}</span>
+            <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
+            `;
+            ingredientsList.appendChild(ingredientItem);
+        })
 
         const saveRecipeBtn = document.getElementById("save-recipe-btn");
         saveRecipeBtn.addEventListener("click", async () => {
@@ -229,17 +239,20 @@ onAuthStateChanged(auth, async (user) => {
                 instructionsEdit.classList.remove("hide");
                 ingredientsEdit.classList.remove("hide");
                 instructionsContent.classList.add("hide");
+                saveRecipeBtn.classList.remove("hide");
+                editListBtn.classList.add("hide");
             } else {
                 instructionsEdit.classList.add("hide");
                 ingredientsEdit.classList.add("hide");
                 instructionsContent.classList.remove("hide");
+                saveRecipeBtn.classList.add("hide");
+                editListBtn.classList.remove("hide");
             }
 
         }
 
         const editListBtn = document.getElementById("edit-list-btn");
         editListBtn.addEventListener("click", () => toggleEditState(true));
-
 
         const addIngredientBtn = document.getElementById("add-ingredient-btn");
         addIngredientBtn.addEventListener("click", () => {
@@ -255,6 +268,18 @@ onAuthStateChanged(auth, async (user) => {
                         name: ingredientInput,
                         instructions: ingredientInstructionsInput || "",
                     })
+
+                    const ingredientItem = document.createElement("li");
+                    ingredientItem.innerHTML = `
+                    <span class="ingredient-name">${ingredientInput}</span>
+                    <span class="ingredient-instructions">${ingredientInstructionsInput || ''}</span>
+                    `;
+                    ingredientsList.appendChild(ingredientItem);
+
+                    document.getElementById("ingredient-input").value = "";
+                    document.getElementById("ingredient-instructions-input").value = "";
+
+                    console.log("Ingredient added successfully:", ingredientInput);
 
                 } catch (error) {
                     console.error("Error adding ingredient:", error);
