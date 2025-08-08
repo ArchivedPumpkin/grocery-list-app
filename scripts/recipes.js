@@ -178,7 +178,7 @@ onAuthStateChanged(auth, async (user) => {
         editSection.classList.add("edit-recipe-section");
         editSection.innerHTML = `
         <div class="edit-recipe-header">
-            <h1>${recipe.name}</h1>
+            <h1 class="recipe-title">${recipe.name}</h1>
             <div id="instructions-container">
                 <div id="instructions-content" placeholder="Enter instructions">${recipe.instructions}</div>
                 <textarea id="instructions-input" class="hide" placeholder="Enter instructions">${recipe.instructions}</textarea>
@@ -189,11 +189,13 @@ onAuthStateChanged(auth, async (user) => {
                     <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
                     <button id="add-ingredient-btn">Add</button>
                 </div>
+                <h2 class="ingredients-title">Ingredients</h2>
                 <ul id="ingredients-list">
 
                 </ul>
             </div>
             <button id="edit-list-btn">Edit</button>
+            <button id="copy-ingredients-btn">Add to grocery list</button>
             <button id="save-recipe-btn" class="hide">Save</button>
             <button id="cancel-edit-btn" class="hide">Cancel</button>
         </div>
@@ -201,14 +203,53 @@ onAuthStateChanged(auth, async (user) => {
 
         mainContainer.appendChild(editSection);
 
+        // Update the ingredient item template in the showEditRecipe function
         Object.entries(recipe.ingredients).forEach(([ingredientId, ingredient]) => {
             const ingredientsList = document.getElementById("ingredients-list");
             const ingredientItem = document.createElement("li");
             ingredientItem.innerHTML = `
-            <span class="ingredient-name">${ingredient.name}</span>
-            <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
+                <div class="ingredient-item">
+                    <input type="checkbox" class="ingredient-selector" data-ingredient-id="${ingredientId}">
+                    <div class="ingredient-content">
+                        <span class="ingredient-name">${ingredient.name}</span>
+                        <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
+                    </div>
+                </div>
             `;
             ingredientsList.appendChild(ingredientItem);
+        });
+
+        const copyIngredientsBtn = document.getElementById("copy-ingredients-btn");
+        copyIngredientsBtn.addEventListener("click", async () => {
+            // get all selected ingredients
+            const selectedIngredients = new Array;
+            const ingredientSelectors = document.querySelectorAll(".ingredient-selector:checked");
+
+            if (ingredientSelectors.length === 0) {
+                return;
+            }
+
+            ingredientSelectors.forEach(selector => {
+                const ingredientName = selector.closest(".ingredient-item").querySelector(".ingredient-name").textContent;
+                selectedIngredients.push(ingredientName)
+            })
+
+            console.log("Selected ingredients:", selectedIngredients);
+
+            if (selectedIngredients.length > 0) {
+                const listsRef = ref(db, "groceryLists/lists")
+
+                try {
+                    const snapshot = await get(listsRef);
+                    if (snapshot.exists()) {
+                        const lists = snapshot.val();
+                    }
+
+                } catch (err) {
+                    console.error("Error copying ingredients:", err);
+                    alert("Failed to copy ingredients to list");
+                }
+            }
         })
 
         const saveRecipeBtn = document.getElementById("save-recipe-btn");

@@ -80,3 +80,24 @@ textarea#instructions-input {
     height: 150px;
     box-sizing: border-box;
 }
+
+div#ingredients-container {
+    padding: 16px;
+}
+
+h2.ingredients-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+h1.recipe-title {
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 72px;
+    margin: 0;
+    letter-spacing: 0.2px;
+    font-weight: 700;
+}
