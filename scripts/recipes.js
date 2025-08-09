@@ -195,7 +195,13 @@ onAuthStateChanged(auth, async (user) => {
                 </ul>
             </div>
             <button id="edit-list-btn">Edit</button>
-            <button id="copy-ingredients-btn">Add to grocery list</button>
+            <select id="select-grocery-list">
+                <option value="">Select grocery list</option>
+            </select>
+            <button id="copy-ingredients-btn">Add</button>
+        </div>
+        <div class="edit-recipe-actions">
+            
             <button id="save-recipe-btn" class="hide">Save</button>
             <button id="cancel-edit-btn" class="hide">Cancel</button>
         </div>
@@ -218,6 +224,32 @@ onAuthStateChanged(auth, async (user) => {
             `;
             ingredientsList.appendChild(ingredientItem);
         });
+
+        async function fetchGroceryLists() {
+            const selectGroceryList = document.getElementById("select-grocery-list");
+
+            const personalListOption = document.createElement("option");
+            personalListOption.value = "personal";
+            personalListOption.textContent = "Personal List";
+            selectGroceryList.appendChild(personalListOption);
+
+            const groceryListRef = ref(db, "groceryLists/lists");
+            const groceryListSnapshot = await get(groceryListRef);
+
+
+            if (groceryListSnapshot.exists()) {
+                const groceryLists = groceryListSnapshot.val();
+
+                for (let listId in groceryLists) {
+                    const option = document.createElement("option");
+                    option.value = listId;
+                    option.textContent = groceryLists[listId].name;
+                    selectGroceryList.appendChild(option);
+                }
+            }
+
+        }
+        fetchGroceryLists();
 
         const copyIngredientsBtn = document.getElementById("copy-ingredients-btn");
         copyIngredientsBtn.addEventListener("click", async () => {
@@ -243,6 +275,16 @@ onAuthStateChanged(auth, async (user) => {
                     const snapshot = await get(listsRef);
                     if (snapshot.exists()) {
                         const lists = snapshot.val();
+                        const selectedListId = document.getElementById("select-grocery-list").value;
+
+                        if (selectedListId) {
+                            const selectedListRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
+                            const selectedListSnapshot = await get(selectedListRef);
+
+                            if (selectedListSnapshot.exists()) {
+
+                            }
+                        }
                     }
 
                 } catch (err) {
