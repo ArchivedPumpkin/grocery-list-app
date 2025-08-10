@@ -263,7 +263,8 @@ onAuthStateChanged(auth, async (user) => {
 
             ingredientSelectors.forEach(selector => {
                 const ingredientName = selector.closest(".ingredient-item").querySelector(".ingredient-name").textContent;
-                selectedIngredients.push(ingredientName)
+                const ingredientInstructions = selector.closest(".ingredient-item").querySelector(".ingredient-instructions").textContent;
+                selectedIngredients.push({ name: ingredientName, instructions: ingredientInstructions });
             })
 
             console.log("Selected ingredients:", selectedIngredients);
@@ -278,11 +279,21 @@ onAuthStateChanged(auth, async (user) => {
                         const selectedListId = document.getElementById("select-grocery-list").value;
 
                         if (selectedListId) {
-                            const selectedListRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
+                            const selectedListRef = ref(db, `groceryLists/lists/${selectedListId}`);
                             const selectedListSnapshot = await get(selectedListRef);
 
                             if (selectedListSnapshot.exists()) {
+                                const selectedList = selectedListSnapshot.val();
+                                const ingredientsRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
 
+                                for (const ingredient of selectedIngredients) {
+                                    const newIngredientRef = push(ingredientsRef);
+                                    await set(newIngredientRef, {
+                                        name: ingredient.name,
+                                        instructions: ingredient.instructions
+                                    });
+                                    console.log("Ingredient copied to list:", ingredient.name);
+                                }
                             }
                         }
                     }

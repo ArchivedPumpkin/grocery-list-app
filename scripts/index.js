@@ -199,7 +199,17 @@ function setupGroceriesApp(referenceInDb, user) {
   listenToList(activeListRef);
 
   inputBtn.addEventListener("click", function () {
-    let orderNum = groceriesList.length > 0 ? Math.max(...groceriesList.map(item => item[1].order)) + 1 : 1;
+    // Calculate order number differently for shared lists
+    let orderNum;
+    if (groceriesList.length > 0) {
+      const validOrders = groceriesList
+        .map(item => item[1].order)
+        .filter(order => !isNaN(order)); // Filter out any NaN values
+      orderNum = validOrders.length > 0 ? Math.max(...validOrders) + 1 : 1;
+    } else {
+      orderNum = 1;
+    }
+
     if (inputEl.value.trim() === "") {
       alert("Please enter a grocery item.");
       return;
@@ -207,19 +217,16 @@ function setupGroceriesApp(referenceInDb, user) {
       alert("This grocery item already exists.");
       return;
     } else {
-      console.log("Trying to push:", {
-        order: orderNum,
-        name: inputEl.value,
-        description: descriptionEl.value,
-        completed: false
-      });
-
-      push(activeListRef, {
+      const newItem = {
         name: inputEl.value,
         description: descriptionEl.value,
         completed: false,
         order: orderNum
-      });
+      };
+
+      console.log("Trying to push:", newItem);
+
+      push(activeListRef, newItem);
       inputEl.value = "";
       descriptionEl.value = "";
       descriptionEl.disabled = true;
