@@ -209,11 +209,22 @@ onAuthStateChanged(auth, async (user) => {
 
         mainContainer.appendChild(editSection);
 
-        // Update the ingredient item template in the showEditRecipe function
-        Object.entries(recipe.ingredients).forEach(([ingredientId, ingredient]) => {
+        // Update the ingredient item template in the showEditRecipe function if ingredients exist
+
+        async function fetchRecipeIngredients() {
+
+            if (!recipe || !recipe.ingredients) {
+                console.log("No ingredients found for this recipe");
+                return;
+            }
+
             const ingredientsList = document.getElementById("ingredients-list");
-            const ingredientItem = document.createElement("li");
-            ingredientItem.innerHTML = `
+            ingredientsList.innerHTML = ""; // Clear existing ingredients
+
+            Object.entries(recipe.ingredients).forEach(([ingredientId, ingredient]) => {
+                const ingredientsList = document.getElementById("ingredients-list");
+                const ingredientItem = document.createElement("li");
+                ingredientItem.innerHTML = `
                 <div class="ingredient-item">
                     <input type="checkbox" class="ingredient-selector" data-ingredient-id="${ingredientId}">
                     <div class="ingredient-content">
@@ -222,8 +233,10 @@ onAuthStateChanged(auth, async (user) => {
                     </div>
                 </div>
             `;
-            ingredientsList.appendChild(ingredientItem);
-        });
+                ingredientsList.appendChild(ingredientItem);
+            });
+        }
+        fetchRecipeIngredients();
 
         async function fetchGroceryLists() {
             const selectGroceryList = document.getElementById("select-grocery-list");
