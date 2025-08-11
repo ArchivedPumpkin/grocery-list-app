@@ -55,7 +55,7 @@ onAuthStateChanged(auth, (user) => {
             handleEl.textContent = `#${user.uid.slice(0, 5)}`; // Display first 5 characters of username id as handle
 
             // Display shared lists if any
-            const sharedListsRef = ref(db, `users/${user.uid}/groceryLists/sharedLists`)
+            const sharedListsRef = ref(db, `groceryLists/lists`)
             const sharedListsSnapshot = await get(sharedListsRef);
 
             if (sharedListsSnapshot.exists()) {
@@ -71,8 +71,8 @@ onAuthStateChanged(auth, (user) => {
                     const listItem = document.createElement("li");
                     listItem.innerHTML = `
                     <div >
-                        <p>${listData.listName}<p>
-                        <p>${membersList}</p>
+                        <p>${listData.name}</p>
+                        <p style="font-style: italic;">${membersList}</p>
                     <div>`;
                     friendsList.appendChild(listItem);
 
