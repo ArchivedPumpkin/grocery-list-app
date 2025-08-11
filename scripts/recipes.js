@@ -178,10 +178,14 @@ onAuthStateChanged(auth, async (user) => {
         editSection.classList.add("edit-recipe-section");
         editSection.innerHTML = `
         <div class="edit-recipe-header">
-            <h1 class="recipe-title">${recipe.name}</h1>
+            <div class="recipe-header-info">
+                <i class="fa-solid fa-arrow-left" id="back-btn" aria-hidden="true"></i>
+                <h1 class="recipe-title">${recipe.name}</h1>
+            </div>
             <div id="instructions-container">
+            <h2 class="instructions-title">Instructions</h2>
                 <div id="instructions-content" placeholder="Enter instructions">${recipe.instructions}</div>
-                <textarea id="instructions-input" class="hide" placeholder="Enter instructions">${recipe.instructions}</textarea>
+                <textarea id="instructions-input" class="hide" placeholder="Enter instructions" style="white-space: pre-wrap;">${recipe.instructions}</textarea>
             </div>
             <div id="ingredients-container">
                 <div id="ingredients-input-container" class="hide">
@@ -419,6 +423,12 @@ onAuthStateChanged(auth, async (user) => {
                 }
             }
         })
+
+        const backBtn = document.getElementById("back-btn");
+        backBtn.addEventListener("click", () => {
+            editSection.remove();
+            document.getElementById("content-container").style.display = "block";
+        });
     }
 
 

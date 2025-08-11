@@ -58,6 +58,8 @@ i.fa-solid.fa-ellipsis {
 h3.recipe-title {
     font-weight: 600;
     letter-spacing: 0.5px;
+    margin-top: 20px;
+    color: #434343;
 }
 
 .recipe-info {
@@ -85,7 +87,8 @@ div#ingredients-container {
     padding: 16px;
 }
 
-h2.ingredients-title {
+h2.ingredients-title,
+h2.instructions-title {
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 0.2px;
@@ -100,4 +103,91 @@ h1.recipe-title {
     margin: 0;
     letter-spacing: 0.2px;
     font-weight: 700;
+}
+
+.ingredient-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+span.ingredient-name {
+    font-size: 16px;
+    letter-spacing: 0.2px;
+}
+
+.ingredient-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 24px;
+}
+
+input.ingredient-selector {
+    width: 25px;
+    height: 25px;
+    border: 2px solid #DBE5DE;
+    appearance: none;
+    border-radius: 5rem;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+input.ingredient-selector:checked {
+    background-color: #38E07A;
+    border-color: #38E07A;
+}
+
+input.ingredient-selector:checked::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+}
+
+li {
+    border: none;
+    padding: 12px 0;
+}
+
+span.ingredient-instructions {
+    display: flex;
+    font-size: 14px;
+    font-weight: 300;
+    color: #B8B8B8;
+}
+
+#instructions-input {
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    resize: vertical;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+#instructions-content {
+    white-space: pre-wrap;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.recipe-header-info {
+    margin-top: 20px;
+    position: relative;
+}
+
+i.fa-solid.fa-arrow-left#back-btn {
+    position: absolute;
+    top: 50%;
+    font-size: 20px;
+    left: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #434343;
 }
