@@ -283,32 +283,58 @@ onAuthStateChanged(auth, async (user) => {
             console.log("Selected ingredients:", selectedIngredients);
 
             if (selectedIngredients.length > 0) {
-                const listsRef = ref(db, "groceryLists/lists")
+                const selectedListId = document.getElementById("select-grocery-list").value;
 
                 try {
-                    const snapshot = await get(listsRef);
-                    if (snapshot.exists()) {
-                        const lists = snapshot.val();
-                        const selectedListId = document.getElementById("select-grocery-list").value;
 
-                        if (selectedListId) {
-                            const selectedListRef = ref(db, `groceryLists/lists/${selectedListId}`);
-                            const selectedListSnapshot = await get(selectedListRef);
+                    if (selectedListId === "personal") {
+                        try {
+                            const personalListRef = ref(db, `users/${user.uid}/groceryLists/default`);
 
-                            if (selectedListSnapshot.exists()) {
-                                const selectedList = selectedListSnapshot.val();
-                                const ingredientsRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
+                            for (const ingredient of selectedIngredients) {
+                                const newIngredientRef = push(personalListRef);
 
-                                for (const ingredient of selectedIngredients) {
-                                    const newIngredientRef = push(ingredientsRef);
-                                    await set(newIngredientRef, {
-                                        name: ingredient.name,
-                                        instructions: ingredient.instructions
-                                    });
-                                    console.log("Ingredient copied to list:", ingredient.name);
+                                await set(newIngredientRef, {
+                                    name: ingredient.name,
+                                    description: ingredient.instructions,
+                                    completed: false,
+                                    order: 0
+                                });
+                                console.log("Ingredient copied to personal list:", ingredient.name);
+                                alert("Ingredients copied to your personal list");
+
+                            }
+                        } catch (error) {
+                            console.error("Error copying ingredients to personal list:", error);
+                            alert("Failed to copy ingredients to personal list");
+                        }
+                    } else {
+                        const listsRef = ref(db, `groceryLists/lists`);
+                        const snapshot = await get(listsRef);
+
+                        if (snapshot.exists()) {
+                            const lists = snapshot.val();
+
+                            if (selectedListId) {
+                                const selectedListRef = ref(db, `groceryLists/lists/${selectedListId}`);
+                                const selectedListSnapshot = await get(selectedListRef);
+
+                                if (selectedListSnapshot.exists()) {
+                                    const selectedList = selectedListSnapshot.val();
+                                    const ingredientsRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
+
+                                    for (const ingredient of selectedIngredients) {
+                                        const newIngredientRef = push(ingredientsRef);
+                                        await set(newIngredientRef, {
+                                            name: ingredient.name,
+                                            instructions: ingredient.instructions
+                                        });
+                                        console.log("Ingredient copied to list:", ingredient.name);
+                                    }
                                 }
                             }
                         }
+
                     }
 
                 } catch (err) {
