@@ -183,17 +183,23 @@ onAuthStateChanged(auth, async (user) => {
                 <h1 class="recipe-title">${recipe.name}</h1>
             </div>
             <div id="instructions-container">
-            <h2 class="instructions-title">Instructions</h2>
+                <div class="instructions-header">
+                    <h2 class="instructions-title">Instructions</h2>
+                    <i class="fa-solid fa-pen edit-instructions">_</i>
+                </div>
                 <div id="instructions-content" placeholder="Enter instructions">${recipe.instructions}</div>
                 <textarea id="instructions-input" class="hide" placeholder="Enter instructions" style="white-space: pre-wrap;">${recipe.instructions}</textarea>
             </div>
             <div id="ingredients-container">
+                <div class="ingredients-list-container">
+                    <h2 class="ingredients-title">Ingredients</h2>
+                    <i class="fa-solid fa-pen edit-ingredients">_</i>
+                </div>
                 <div id="ingredients-input-container" class="hide">
                     <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
                     <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
                     <button id="add-ingredient-btn">Add</button>
                 </div>
-                <h2 class="ingredients-title">Ingredients</h2>
                 <ul id="ingredients-list">
 
                 </ul>
@@ -387,6 +393,60 @@ onAuthStateChanged(auth, async (user) => {
             }
 
         }
+
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        const editInstructionsBtn = document.querySelector(".edit-instructions");
+        editInstructionsBtn.addEventListener("click", () => {
+            const inputInstructions = document.getElementById("instructions-input");
+            const instructionsContent = document.getElementById("instructions-content");
+
+            if (inputInstructions.classList.contains("hide")) {
+                inputInstructions.classList.remove("hide");
+                instructionsContent.classList.add("hide");
+                inputInstructions.focus();
+                autoResizeTextarea(inputInstructions);
+                editInstructionsBtn.classList.add("fa-check");
+                editInstructionsBtn.classList.remove("fa-pen");
+                editInstructionsBtn.textContent = "";
+
+                toggleEditState(true);
+            } else {
+                inputInstructions.classList.add("hide");
+                instructionsContent.classList.remove("hide");
+                editInstructionsBtn.classList.add("fa-pen");
+                editInstructionsBtn.classList.remove("fa-check");
+                editInstructionsBtn.textContent = "_";
+
+                toggleEditState(false);
+            }
+        })
+
+        const editIngredientsBtn = document.querySelector(".edit-ingredients");
+        editIngredientsBtn.addEventListener("click", () => {
+            const ingredientsInputContainer = document.getElementById("ingredients-input-container");
+            const ingredientsList = document.getElementById("ingredients-list");
+
+            if (ingredientsInputContainer.classList.contains("hide")) {
+                ingredientsInputContainer.classList.remove("hide");
+                editIngredientsBtn.classList.add("fa-check");
+                editIngredientsBtn.classList.remove("fa-pen");
+                editIngredientsBtn.textContent = "";
+
+                toggleEditState(true);
+            } else {
+                ingredientsInputContainer.classList.add("hide");
+                ingredientsList.classList.remove("hide");
+                editIngredientsBtn.classList.add("fa-pen");
+                editIngredientsBtn.classList.remove("fa-check");
+                editIngredientsBtn.textContent = "_";
+
+                toggleEditState(false);
+            }
+        })
 
         const editListBtn = document.getElementById("edit-list-btn");
         editListBtn.addEventListener("click", () => toggleEditState(true));

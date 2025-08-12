@@ -3,7 +3,7 @@
 }
 
 img.profile-picture {
-    max-width: 100px;
+    max-width: 130px;
     border-radius: 5rem;
     margin-bottom: 10px;
 }
@@ -34,11 +34,14 @@ h1 {
     align-items: center;
     height: 72px;
     margin: 0;
+    letter-spacing: 0.2px;
+    margin-top: 20px;
+
 }
 
 h3 {
     font-size: 18px;
-    margin: 0;
+    margin: 0 0 1rem 0;
 }
 
 #friends-container {
@@ -63,4 +66,35 @@ ul#friends-list {
 
 #friends-list li {
     padding: 10px;
+}
+
+#list-name {
+    font-weight: 600;
+    margin: 0;
+}
+
+#list-members {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.list-item {
+    display: flex;
+    padding: 1rem 1.5rem;
+    background-color: rgb(249 250 251);
+    border-radius: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.view-list {
+    color: rgb(156 163 174);
+    font-size: 18px;
 }

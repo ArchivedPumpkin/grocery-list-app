@@ -70,10 +70,15 @@ onAuthStateChanged(auth, (user) => {
 
                     const listItem = document.createElement("li");
                     listItem.innerHTML = `
-                    <div >
-                        <p>${listData.name}</p>
-                        <p style="font-style: italic;">${membersList}</p>
-                    <div>`;
+                    <div class="list-item">
+                        <div class="list-details">
+                            <p id="list-name">${listData.name}</p>
+                            <p id="list-members">${membersList}</p>
+                        </div>
+                        <a href="/pages/list.html?listId=${sharedId}" class="view-list-btn">
+                        <i class="fa-solid fa-angle-right view-list" id="view-list-btn" aria-hidden="true"></i>
+                        </a>
+                    </div>`;
                     friendsList.appendChild(listItem);
 
                 }

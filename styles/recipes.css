@@ -191,3 +191,23 @@ i.fa-solid.fa-arrow-left#back-btn {
     cursor: pointer;
     color: #434343;
 }
+
+.ingredients-list-container,
+.instructions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+i.fa-solid.fa-pen.edit-ingredients,
+i.fa-solid.fa-pen.edit-instructions {
+    color: #648773;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+i.fa-solid.edit-instructions.fa-check,
+i.fa-solid.edit-ingredients.fa-check {
+    color: #648773;
+    font-size: 18px;
+}
