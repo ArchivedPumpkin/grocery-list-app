@@ -354,8 +354,7 @@ onAuthStateChanged(auth, async (user) => {
             }
         })
 
-        const saveRecipeBtn = document.getElementById("save-recipe-btn");
-        saveRecipeBtn.addEventListener("click", async () => {
+        async function saveInstructions() {
             const instructions = document.getElementById("instructions-input").value;
 
             try {
@@ -370,7 +369,7 @@ onAuthStateChanged(auth, async (user) => {
                 console.error("Error updating recipe:", error);
             }
             toggleEditState(false);
-        })
+        }
 
 
         function toggleEditState(isEditing) {
@@ -421,7 +420,7 @@ onAuthStateChanged(auth, async (user) => {
                 editInstructionsBtn.classList.remove("fa-check");
                 editInstructionsBtn.textContent = "_";
 
-                toggleEditState(false);
+                saveInstructions();
             }
         })
 
