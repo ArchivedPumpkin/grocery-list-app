@@ -204,7 +204,6 @@ onAuthStateChanged(auth, async (user) => {
 
                 </ul>
             </div>
-            <button id="edit-list-btn">Edit</button>
             <select id="select-grocery-list">
                 <option value="">Select grocery list</option>
             </select>
@@ -222,16 +221,17 @@ onAuthStateChanged(auth, async (user) => {
         // Update the ingredient item template in the showEditRecipe function if ingredients exist
 
         async function fetchRecipeIngredients() {
+            const ingredientsRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
+            const ingredientsSnapshot = await get(ingredientsRef);
 
-            if (!recipe || !recipe.ingredients) {
+            if (!ingredientsSnapshot.exists()) {
                 console.log("No ingredients found for this recipe");
                 return;
             }
 
-            const ingredientsList = document.getElementById("ingredients-list");
-            ingredientsList.innerHTML = ""; // Clear existing ingredients
 
-            Object.entries(recipe.ingredients).forEach(([ingredientId, ingredient]) => {
+            const ingredients = ingredientsSnapshot.val();
+            Object.entries(ingredients).forEach(([ingredientId, ingredient]) => {
                 const ingredientsList = document.getElementById("ingredients-list");
                 const ingredientItem = document.createElement("li");
                 ingredientItem.innerHTML = `
@@ -372,25 +372,35 @@ onAuthStateChanged(auth, async (user) => {
         }
 
 
-        function toggleEditState(isEditing) {
+        function toggleEditState(ingredients, instructions) {
             const instructionsEdit = document.getElementById("instructions-input");
             const ingredientsEdit = document.getElementById("ingredients-input-container");
             const instructionsContent = document.getElementById("instructions-content");
 
-            if (isEditing) {
-                instructionsEdit.classList.remove("hide");
-                ingredientsEdit.classList.remove("hide");
-                instructionsContent.classList.add("hide");
-                saveRecipeBtn.classList.remove("hide");
-                editListBtn.classList.add("hide");
-            } else {
-                instructionsEdit.classList.add("hide");
-                ingredientsEdit.classList.add("hide");
-                instructionsContent.classList.remove("hide");
-                saveRecipeBtn.classList.add("hide");
-                editListBtn.classList.remove("hide");
+            switch (ingredients) {
+                case true:
+                    ingredientsEdit.classList.remove("hide");
+                    break;
+                case false:
+                    ingredientsEdit.classList.add("hide");
+                    break;
+                default:
+                    ingredientsEdit.classList.add("hide");
             }
 
+            switch (instructions) {
+                case true:
+                    instructionsEdit.classList.remove("hide");
+                    instructionsContent.classList.add("hide");
+                    break;
+                case false:
+                    instructionsEdit.classList.add("hide");
+                    instructionsContent.classList.remove("hide");
+                    break;
+                default:
+                    instructionsEdit.classList.add("hide");
+                    instructionsContent.classList.remove("hide");
+            }
         }
 
         function autoResizeTextarea(textarea) {
@@ -412,7 +422,7 @@ onAuthStateChanged(auth, async (user) => {
                 editInstructionsBtn.classList.remove("fa-pen");
                 editInstructionsBtn.textContent = "";
 
-                toggleEditState(true);
+                toggleEditState(false, true);
             } else {
                 inputInstructions.classList.add("hide");
                 instructionsContent.classList.remove("hide");
@@ -435,7 +445,7 @@ onAuthStateChanged(auth, async (user) => {
                 editIngredientsBtn.classList.remove("fa-pen");
                 editIngredientsBtn.textContent = "";
 
-                toggleEditState(true);
+                toggleEditState(true, false);
             } else {
                 ingredientsInputContainer.classList.add("hide");
                 ingredientsList.classList.remove("hide");
@@ -443,12 +453,9 @@ onAuthStateChanged(auth, async (user) => {
                 editIngredientsBtn.classList.remove("fa-check");
                 editIngredientsBtn.textContent = "_";
 
-                toggleEditState(false);
+                toggleEditState(false, false);
             }
         })
-
-        const editListBtn = document.getElementById("edit-list-btn");
-        editListBtn.addEventListener("click", () => toggleEditState(true));
 
         const addIngredientBtn = document.getElementById("add-ingredient-btn");
         addIngredientBtn.addEventListener("click", () => {
@@ -465,15 +472,7 @@ onAuthStateChanged(auth, async (user) => {
                         instructions: ingredientInstructionsInput || "",
                     })
 
-                    const ingredientItem = document.createElement("li");
-                    ingredientItem.innerHTML = `
-                    <span class="ingredient-name">${ingredientInput}</span>
-                    <span class="ingredient-instructions">${ingredientInstructionsInput || ''}</span>
-                    `;
-                    ingredientsList.appendChild(ingredientItem);
-
-                    document.getElementById("ingredient-input").value = "";
-                    document.getElementById("ingredient-instructions-input").value = "";
+                    fetchRecipeIngredients();
 
                     console.log("Ingredient added successfully:", ingredientInput);
 

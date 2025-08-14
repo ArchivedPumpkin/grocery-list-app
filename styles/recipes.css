@@ -100,9 +100,11 @@ h1.recipe-title {
     justify-content: center;
     align-items: center;
     height: 72px;
-    margin: 0;
     letter-spacing: 0.2px;
     font-weight: 700;
+    text-align: center;
+    max-width: 70%;
+    margin: 0 auto;
 }
 
 .ingredient-item {
@@ -179,17 +181,13 @@ span.ingredient-instructions {
 
 .recipe-header-info {
     margin-top: 20px;
-    position: relative;
 }
 
 i.fa-solid.fa-arrow-left#back-btn {
-    position: absolute;
-    top: 50%;
     font-size: 20px;
-    left: 20px;
-    transform: translateY(-50%);
     cursor: pointer;
     color: #434343;
+    margin-left: 20px;
 }
 
 .ingredients-list-container,
