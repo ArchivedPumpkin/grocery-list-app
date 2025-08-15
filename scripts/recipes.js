@@ -142,7 +142,7 @@ onAuthStateChanged(auth, async (user) => {
             viewBtn.addEventListener("click", () => {
                 showEditRecipe(recipeId, recipe);
 
-                const ingredientsListRef = ref(db, `groceryLists / recipes / ${recipeId}/ingredients`);
+                const ingredientsListRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
                 onValue(ingredientsListRef, (snapshot) => {
                     const ingredientsList = document.getElementById("ingredients-list");
                     ingredientsList.innerHTML = ""; // Clear existing ingredients
@@ -220,7 +220,7 @@ onAuthStateChanged(auth, async (user) => {
 
         // Update the ingredient item template in the showEditRecipe function if ingredients exist
 
-        async function fetchRecipeIngredients() {
+        async function fetchRecipeIngredients(preserveEditState = false) {
             const ingredientsRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
             const ingredientsSnapshot = await get(ingredientsRef);
 
@@ -229,6 +229,8 @@ onAuthStateChanged(auth, async (user) => {
                 return;
             }
 
+            const ingredientsList = document.getElementById("ingredients-list");
+            ingredientsList.innerHTML = ""; // Clear existing ingredients
 
             const ingredients = ingredientsSnapshot.val();
             Object.entries(ingredients).forEach(([ingredientId, ingredient]) => {
@@ -241,8 +243,14 @@ onAuthStateChanged(auth, async (user) => {
                         <span class="ingredient-name">${ingredient.name}</span>
                         <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
                     </div>
+                    <i class="fa-solid fa-trash delete-ingredient ${preserveEditState ? '' : 'hide'}" data-ingredient-id="${ingredientId}"></i>
                 </div>
             `;
+
+                const deleteIngredientBtn = ingredientItem.querySelector(".delete-ingredient");
+                deleteIngredientBtn.addEventListener("click", () => {
+                    deleteIngredient(ingredientId);
+                });
                 ingredientsList.appendChild(ingredientItem);
             });
         }
@@ -376,16 +384,20 @@ onAuthStateChanged(auth, async (user) => {
             const instructionsEdit = document.getElementById("instructions-input");
             const ingredientsEdit = document.getElementById("ingredients-input-container");
             const instructionsContent = document.getElementById("instructions-content");
+            const deleteIngredientBtns = document.querySelectorAll(".delete-ingredient");
 
             switch (ingredients) {
                 case true:
                     ingredientsEdit.classList.remove("hide");
+                    deleteIngredientBtns.forEach(btn => btn.classList.remove("hide"));
                     break;
                 case false:
                     ingredientsEdit.classList.add("hide");
+                    deleteIngredientBtns.forEach(btn => btn.classList.add("hide"));
                     break;
                 default:
                     ingredientsEdit.classList.add("hide");
+                    deleteIngredientBtns.forEach(btn => btn.classList.add("hide"));
             }
 
             switch (instructions) {
@@ -481,6 +493,25 @@ onAuthStateChanged(auth, async (user) => {
                 }
             }
         })
+
+        async function deleteIngredient(ingredientId) {
+            const ingredientRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients/${ingredientId}`)
+            const promptDelete = confirm("Are you sure you want to delete this ingredient?");
+
+            if (!promptDelete) {
+                return;
+            }
+
+            try {
+                await set(ingredientRef, null);
+                console.log("Ingredient deleted successfully:", ingredientId);
+                await fetchRecipeIngredients(true);
+
+            } catch (error) {
+                console.error("Error deleting ingredient:", error);
+            }
+
+        }
 
         const backBtn = document.getElementById("back-btn");
         backBtn.addEventListener("click", () => {
