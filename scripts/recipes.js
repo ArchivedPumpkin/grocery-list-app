@@ -416,7 +416,7 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         function autoResizeTextarea(textarea) {
-            textarea.style.height = 'auto';
+            textarea.style.height = '0px';
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
@@ -425,10 +425,13 @@ onAuthStateChanged(auth, async (user) => {
             const inputInstructions = document.getElementById("instructions-input");
             const instructionsContent = document.getElementById("instructions-content");
 
+            inputInstructions.addEventListener("input", () => {
+                autoResizeTextarea(inputInstructions);
+            });
+
             if (inputInstructions.classList.contains("hide")) {
                 inputInstructions.classList.remove("hide");
                 instructionsContent.classList.add("hide");
-                inputInstructions.focus();
                 autoResizeTextarea(inputInstructions);
                 editInstructionsBtn.classList.add("fa-check");
                 editInstructionsBtn.classList.remove("fa-pen");
