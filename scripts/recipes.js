@@ -204,10 +204,12 @@ onAuthStateChanged(auth, async (user) => {
 
                 </ul>
             </div>
-            <select id="select-grocery-list">
-                <option value="">Select grocery list</option>
-            </select>
-            <button id="copy-ingredients-btn">Add</button>
+            <div id="grocery-list-container">
+                <select id="select-grocery-list">
+                    <option value="">Select grocery list</option>
+                </select>
+                <button id="copy-ingredients-btn">Add</button>
+            </div>
         </div>
         <div class="edit-recipe-actions">
             
@@ -385,39 +387,81 @@ onAuthStateChanged(auth, async (user) => {
             const ingredientsEdit = document.getElementById("ingredients-input-container");
             const instructionsContent = document.getElementById("instructions-content");
             const deleteIngredientBtns = document.querySelectorAll(".delete-ingredient");
+            const ingredientsInputContainer = document.getElementById("ingredients-input-container");
+            const ingredientsList = document.getElementById("ingredients-list");
+            const inputInstructions = document.getElementById("instructions-input");
 
             switch (ingredients) {
                 case true:
                     ingredientsEdit.classList.remove("hide");
                     deleteIngredientBtns.forEach(btn => btn.classList.remove("hide"));
+                    ingredientsInputContainer.classList.remove("hide");
+                    editIngredientsBtn.classList.add("fa-check");
+                    editIngredientsBtn.classList.remove("fa-pen");
+                    editIngredientsBtn.textContent = "";
+
                     break;
                 case false:
                     ingredientsEdit.classList.add("hide");
                     deleteIngredientBtns.forEach(btn => btn.classList.add("hide"));
+                    ingredientsInputContainer.classList.add("hide");
+                    ingredientsList.classList.remove("hide");
+                    editIngredientsBtn.classList.add("fa-pen");
+                    editIngredientsBtn.classList.remove("fa-check");
+                    editIngredientsBtn.textContent = "_";
+
                     break;
                 default:
                     ingredientsEdit.classList.add("hide");
                     deleteIngredientBtns.forEach(btn => btn.classList.add("hide"));
+                    ingredientsInputContainer.classList.add("hide");
+                    ingredientsList.classList.remove("hide");
+                    editIngredientsBtn.classList.add("fa-pen");
+                    editIngredientsBtn.classList.remove("fa-check");
+                    editIngredientsBtn.textContent = "_";
             }
 
             switch (instructions) {
                 case true:
                     instructionsEdit.classList.remove("hide");
                     instructionsContent.classList.add("hide");
+                    instructionsEdit.focus();
+                    inputInstructions.classList.remove("hide");
+                    instructionsContent.classList.add("hide");
+                    editInstructionsBtn.classList.add("fa-check");
+                    editInstructionsBtn.classList.remove("fa-pen");
+                    editInstructionsBtn.textContent = "";
+
                     break;
                 case false:
                     instructionsEdit.classList.add("hide");
                     instructionsContent.classList.remove("hide");
+
+                    inputInstructions.classList.add("hide");
+                    instructionsContent.classList.remove("hide");
+                    editInstructionsBtn.classList.add("fa-pen");
+                    editInstructionsBtn.classList.remove("fa-check");
+                    editInstructionsBtn.textContent = "_";
+
                     break;
                 default:
                     instructionsEdit.classList.add("hide");
                     instructionsContent.classList.remove("hide");
+                    inputInstructions.classList.add("hide");
+                    instructionsContent.classList.remove("hide");
+                    editInstructionsBtn.classList.add("fa-pen");
+                    editInstructionsBtn.classList.remove("fa-check");
+                    editInstructionsBtn.textContent = "_";
             }
         }
 
         function autoResizeTextarea(textarea) {
+            const scrollPosition = window.scrollY;
+
             textarea.style.height = '0px';
             textarea.style.height = textarea.scrollHeight + 'px';
+
+            window.scrollTo(0, scrollPosition);
         }
 
         const editInstructionsBtn = document.querySelector(".edit-instructions");
@@ -430,44 +474,21 @@ onAuthStateChanged(auth, async (user) => {
             });
 
             if (inputInstructions.classList.contains("hide")) {
-                inputInstructions.classList.remove("hide");
-                instructionsContent.classList.add("hide");
-                autoResizeTextarea(inputInstructions);
-                editInstructionsBtn.classList.add("fa-check");
-                editInstructionsBtn.classList.remove("fa-pen");
-                editInstructionsBtn.textContent = "";
-
                 toggleEditState(false, true);
+                autoResizeTextarea(inputInstructions);
             } else {
-                inputInstructions.classList.add("hide");
-                instructionsContent.classList.remove("hide");
-                editInstructionsBtn.classList.add("fa-pen");
-                editInstructionsBtn.classList.remove("fa-check");
-                editInstructionsBtn.textContent = "_";
-
                 saveInstructions();
+                toggleEditState(false, false);
             }
         })
 
         const editIngredientsBtn = document.querySelector(".edit-ingredients");
         editIngredientsBtn.addEventListener("click", () => {
             const ingredientsInputContainer = document.getElementById("ingredients-input-container");
-            const ingredientsList = document.getElementById("ingredients-list");
 
             if (ingredientsInputContainer.classList.contains("hide")) {
-                ingredientsInputContainer.classList.remove("hide");
-                editIngredientsBtn.classList.add("fa-check");
-                editIngredientsBtn.classList.remove("fa-pen");
-                editIngredientsBtn.textContent = "";
-
                 toggleEditState(true, false);
             } else {
-                ingredientsInputContainer.classList.add("hide");
-                ingredientsList.classList.remove("hide");
-                editIngredientsBtn.classList.add("fa-pen");
-                editIngredientsBtn.classList.remove("fa-check");
-                editIngredientsBtn.textContent = "_";
-
                 toggleEditState(false, false);
             }
         })
