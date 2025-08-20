@@ -29,6 +29,11 @@
     justify-content: center;
 }
 
+
+.recipe-header-container>h1 {
+    margin: 0;
+}
+
 div#main-content {
     flex: 1 1 auto;
 }
@@ -219,6 +224,14 @@ span.ingredient-instructions {
     font-style: italic;
 }
 
+#recipes-list:empty::before {
+    content: "No recipes created yet";
+    color: #999;
+    display: block;
+    padding: 0 16px;
+    font-style: italic;
+}
+
 .recipe-header-info {
     margin-top: 20px;
 }
@@ -367,4 +380,26 @@ ul#ingredients-list {
 #copy-ingredients-btn:disabled {
     background: #DBE5DE;
     cursor: not-allowed;
+}
+
+.recipe-header-container {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.2s;
+}
+
+.recipes-container {
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -325,18 +325,6 @@ i.fa-solid.fa-ellipsis {
     }
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* Apply fadeInUp animation with staggered delays */
 .header {
     animation: fadeInUp 0.7s ease both;
@@ -355,7 +343,7 @@ i.fa-solid.fa-ellipsis {
 
 #input-desc {
     animation: fadeInUp 0.7s ease both;
-    animation-delay: 0.4s;
+    animation-delay: 0.3s;
 }
 
 #input-btn {
@@ -365,22 +353,17 @@ i.fa-solid.fa-ellipsis {
 
 #btn-container {
     animation: fadeInUp 0.7s ease both;
-    animation-delay: 0.6s;
+    animation-delay: 0.3s;
 }
 
 ul#ul-el {
     animation: fadeInUp 0.7s ease both;
-    animation-delay: 0.7s;
+    animation-delay: 0.4s;
 }
 
 .container-btns {
     animation: fadeInUp 0.7s ease both;
-    animation-delay: 0.8s;
-}
-
-footer {
-    animation: fadeInUp 0.7s ease both;
-    animation-delay: 0.9s;
+    animation-delay: 0.3s;
 }
 
 #grocery-list-select {

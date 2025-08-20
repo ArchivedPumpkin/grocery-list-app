@@ -11,7 +11,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.2s;
 }
+
 
 #friends-list li {
     display: flex;
