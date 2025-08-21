@@ -98,3 +98,11 @@ ul#friends-list {
     color: rgb(156 163 174);
     font-size: 18px;
 }
+
+#friends-list:empty::before {
+    content: "No shared lists";
+    font-style: italic;
+    color: #999;
+    display: block;
+    padding: 10px;
+}
