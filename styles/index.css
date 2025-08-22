@@ -509,20 +509,8 @@ ul#ul-el {
         font-size: 15px;
     }
 
-    ul#ul-el {
-        margin: 20px 10px;
-    }
-
     #input-btn {
         width: 35%;
         font-size: 16px;
-    }
-
-    .swipe-content {
-        padding: 30px;
-    }
-
-    .list__container {
-        font-size: 15px;
     }
 }
