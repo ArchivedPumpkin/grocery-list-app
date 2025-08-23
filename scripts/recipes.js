@@ -31,7 +31,7 @@ onAuthStateChanged(auth, async (user) => {
     const userNameRef = ref(db, `users/${user.uid}/username`);
     const userNameSnapshot = await get(userNameRef);
     const userName = userNameSnapshot.exists() ? userNameSnapshot.val() : "Guest";
-    const userRecipesRef = ref(db, "groceryLists/recipes");
+    const userRecipesRef = ref(db, `users/${user.uid}/recipes`);
 
     const addRecipeBtn = document.getElementById("new-recipe-btn");
     const recipesList = document.getElementById("recipes-list");
@@ -39,7 +39,7 @@ onAuthStateChanged(auth, async (user) => {
     addRecipeBtn.addEventListener("click", async () => {
         const recipeName = prompt("Enter the name of the new recipe:");
         if (recipeName) {
-            const newRecipeRef = push(ref(db, "groceryLists/recipes"));
+            const newRecipeRef = push(ref(db, `users/${user.uid}/recipes`));
 
             try {
                 await set(newRecipeRef, {
@@ -47,10 +47,8 @@ onAuthStateChanged(auth, async (user) => {
                     ingredients: {},
                     instructions: "",
                     createdAt: new Date(Date.now()).toLocaleDateString(),
-                    createdBy: {
-                        id: user.uid,
-                        name: userName
-                    }
+                    owner: true,
+                    username: userName
                 })
 
                 console.log("Recipe added successfully:", recipeName);
@@ -131,7 +129,7 @@ onAuthStateChanged(auth, async (user) => {
                 const confirmDelete = confirm("Are you sure you want to delete this recipe?");
                 if (confirmDelete) {
                     try {
-                        await set(ref(db, `groceryLists/recipes/${recipeId}`), null);
+                        await set(ref(db, `users/${user.uid}/recipes/${recipeId}`), null);
                         console.log("Recipe deleted successfully");
                     } catch (error) {
                         console.error("Error deleting recipe:", error);
@@ -142,7 +140,7 @@ onAuthStateChanged(auth, async (user) => {
             viewBtn.addEventListener("click", () => {
                 showEditRecipe(recipeId, recipe);
 
-                const ingredientsListRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
+                const ingredientsListRef = ref(db, `users/${user.uid}/recipes/${recipeId}/ingredients`);
                 onValue(ingredientsListRef, (snapshot) => {
                     const ingredientsList = document.getElementById("ingredients-list");
                     ingredientsList.innerHTML = ""; // Clear existing ingredients
@@ -223,7 +221,7 @@ onAuthStateChanged(auth, async (user) => {
         // Update the ingredient item template in the showEditRecipe function if ingredients exist
 
         async function fetchRecipeIngredients(preserveEditState = false) {
-            const ingredientsRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients`);
+            const ingredientsRef = ref(db, `users/${user.uid}/recipes/${recipeId}/ingredients`);
             const ingredientsSnapshot = await get(ingredientsRef);
 
             if (!ingredientsSnapshot.exists()) {
@@ -341,7 +339,7 @@ onAuthStateChanged(auth, async (user) => {
 
                                 if (selectedListSnapshot.exists()) {
                                     const selectedList = selectedListSnapshot.val();
-                                    const ingredientsRef = ref(db, `groceryLists/lists/${selectedListId}/items`);
+                                    const ingredientsRef = ref(db, `groceryLists/lists/${selectedListId}/ingredients`);
 
                                     for (const ingredient of selectedIngredients) {
                                         const newIngredientRef = push(ingredientsRef);
@@ -368,7 +366,7 @@ onAuthStateChanged(auth, async (user) => {
             const instructions = document.getElementById("instructions-input").value;
 
             try {
-                await update(ref(db, `groceryLists/recipes/${recipeId}`), {
+                await update(ref(db, `users/${user.uid}/recipes/${recipeId}`), {
                     instructions: instructions
                 });
 
@@ -502,7 +500,7 @@ onAuthStateChanged(auth, async (user) => {
                 const ingredientsList = document.getElementById("ingredients-list");
 
                 try {
-                    const newIngredientRef = push(ref(db, `groceryLists/recipes/${recipeId}/ingredients`));
+                    const newIngredientRef = push(ref(db, `users/${user.uid}/recipes/${recipeId}/ingredients`));
                     set(newIngredientRef, {
                         name: ingredientInput,
                         instructions: ingredientInstructionsInput || "",
@@ -519,7 +517,7 @@ onAuthStateChanged(auth, async (user) => {
         })
 
         async function deleteIngredient(ingredientId) {
-            const ingredientRef = ref(db, `groceryLists/recipes/${recipeId}/ingredients/${ingredientId}`)
+            const ingredientRef = ref(db, `users/${user.uid}/recipes/${recipeId}/ingredients/${ingredientId}`);
             const promptDelete = confirm("Are you sure you want to delete this ingredient?");
 
             if (!promptDelete) {
