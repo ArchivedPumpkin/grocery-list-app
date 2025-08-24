@@ -288,6 +288,19 @@ span.ingredient-amount {
     font-weight: 700;
 }
 
+section.ingredient-section {
+    display: flex;
+    gap: 5px;
+}
+
+input#ingredient-amount-input {
+    flex: 0.3;
+}
+
+input#ingredient-input {
+    flex: 1;
+}
+
 #ingredient-input:focus,
 #ingredient-instructions-input:focus {
     outline: none;
