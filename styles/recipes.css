@@ -271,7 +271,8 @@ i.fa-solid.edit-ingredients.fa-check {
 /* Add these styles after your existing code */
 
 #ingredient-input,
-#ingredient-instructions-input {
+#ingredient-instructions-input,
+#ingredient-amount-input {
     width: 100%;
     padding: 12px;
     margin-bottom: 8px;
@@ -281,6 +282,10 @@ i.fa-solid.edit-ingredients.fa-check {
     font-family: inherit;
     font-size: inherit;
     color: #4a4a4a;
+}
+
+span.ingredient-amount {
+    font-weight: 700;
 }
 
 #ingredient-input:focus,

@@ -194,7 +194,10 @@ onAuthStateChanged(auth, async (user) => {
                     <i class="fa-solid fa-pen edit-ingredients">_</i>
                 </div>
                 <div id="ingredients-input-container" class="hide">
-                    <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
+                    <section class="ingredient-section">
+                        <input type="text" id="ingredient-amount-input" placeholder="Amount"/>
+                        <input type="text" id="ingredient-input" placeholder="Add ingredient"/>
+                    </section>
                     <input type="text" id="ingredient-instructions-input" placeholder="Instructions for ingredient (optional)"/>
                     <button id="add-ingredient-btn">Add</button>
                 </div>
@@ -240,7 +243,7 @@ onAuthStateChanged(auth, async (user) => {
                 <div class="ingredient-item">
                     <input type="checkbox" class="ingredient-selector" data-ingredient-id="${ingredientId}">
                     <div class="ingredient-content">
-                        <span class="ingredient-name">${ingredient.name}</span>
+                        <span class="ingredient-name"><span class="ingredient-amount">${ingredient.amount ?? ''}</span> ${ingredient.name}</span>
                         <span class="ingredient-instructions">${ingredient.instructions || ''}</span>
                     </div>
                     <i class="fa-solid fa-trash delete-ingredient ${preserveEditState ? '' : 'hide'}" data-ingredient-id="${ingredientId}"></i>
@@ -493,6 +496,7 @@ onAuthStateChanged(auth, async (user) => {
 
         const addIngredientBtn = document.getElementById("add-ingredient-btn");
         addIngredientBtn.addEventListener("click", () => {
+            const ingredientAmountInput = document.getElementById("ingredient-amount-input").value.trim();
             const ingredientInput = document.getElementById("ingredient-input").value.trim();
             const ingredientInstructionsInput = document.getElementById("ingredient-instructions-input").value;
 
@@ -503,6 +507,7 @@ onAuthStateChanged(auth, async (user) => {
                     const newIngredientRef = push(ref(db, `users/${user.uid}/recipes/${recipeId}/ingredients`));
                     set(newIngredientRef, {
                         name: ingredientInput,
+                        amount: ingredientAmountInput || "",
                         instructions: ingredientInstructionsInput || "",
                     })
 
