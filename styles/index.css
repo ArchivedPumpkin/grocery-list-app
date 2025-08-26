@@ -32,7 +32,7 @@ main {
     border: none;
     background-color: #F0F5F2;
     font-size: 14px;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     color: #638773;
 }
 
@@ -40,13 +40,13 @@ main {
 
 #input-desc {
     width: 100%;
-    height: 80px;
-    padding: 20px;
+    height: 50px;
+    padding: 10px 20px;
     box-sizing: border-box;
     border: none;
     background-color: #F0F5F2;
     font-size: 14px;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     color: #638773;
 }
 
@@ -77,7 +77,7 @@ main {
     border: 1px solid #38E07A;
     font-weight: bold;
     flex: 1;
-    border-radius: 0 12px 12px 0;
+    border-radius: 0 0.5rem 0.5rem 0;
     position: absolute;
     right: 0;
     height: 100%;
@@ -375,7 +375,7 @@ ul#ul-el {
     color: #638773;
     background-color: #F0F5F2;
     border: 1px solid #38E07A;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     box-sizing: border-box;
     appearance: none;
     outline: none;
