@@ -104,7 +104,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("User is signed in:", user);
         // Redirect to the main app page if already signed in
-        //window.location.href = "/pages/index.html";
+        window.location.href = "/pages/index.html";
     } else {
         console.log("No user is signed in");
     }
