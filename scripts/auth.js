@@ -69,44 +69,21 @@ createAccountBtn.addEventListener("click", async () => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const uid = userCredential.user.uid;
 
-        const groceryRef = ref(db, `users/${uid}/groceryLists`);
-        const snap = await get(groceryRef);
-
         await set(ref(db, `users/${uid}`), {
             email: email,
             username: username
-        }).then(() => {
-            console.log("User data saved successfully");
-        }).catch((error) => {
-            console.error("Error saving user data:", error);
         });
-
-        if (!snap.exists()) {
-            await set(groceryRef, { default: {}, sharedLists: {} });
-            console.log("Default grocery list created for new user");
-        }
 
         console.log("User registered successfully");
 
         const userRef = ref(db, `users/${uid}`);
         onValue(userRef, (snapshot) => {
             if (snapshot.exists()) {
-                window.location.href = "/pages/index.html"; // Redirect to the main app page
+                window.location.href = "/pages/index.html";
             }
         })
     } catch (error) {
         console.error("Error creating account:", error);
         alert(error.message);
     }
-})
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log("User is signed in:", user);
-        // Redirect to the main app page if already signed in
-        window.location.href = "/pages/index.html";
-    } else {
-        console.log("No user is signed in");
-    }
 });
-
