@@ -35,19 +35,32 @@ const registerBtn = document.getElementById("register-btn");
 const createAccountBtn = document.getElementById("create-account-btn");
 const keepSignedCheckbox = document.getElementById("keep-signed-checkbox");
 
+const updatePersistence = async (checked) => {
+    try {
+        const persistenceType = checked ? browserLocalPersistence : browserSessionPersistence;
+        await setPersistence(auth, persistenceType);
+        console.log("Persistence updated successfully");
+        localStorage.setItem('keepSignedIn', checked);
+    } catch (error) {
+        console.error("Error updating persistence:", error);
+    }
+}
+
+const loadSavedPreference = () => {
+    const saved = localStorage.getItem('keepSignedIn');
+    if (saved !== null) {
+        keepSignedCheckbox.checked = saved === 'true';
+        updatePersistence(keepSignedCheckbox.checked);
+    }
+}
+
+loadSavedPreference();
 
 loginBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
 
     try {
-
-        if (keepSignedCheckbox.checked) {
-            await setPersistence(auth, browserLocalPersistence);
-        } else {
-            await setPersistence(auth, browserSessionPersistence);
-        }
-
         await signInWithEmailAndPassword(auth, email, password);
         console.log("User signed in successfully");
         window.location.href = "/pages/index.html"; // Redirect to the main app page
