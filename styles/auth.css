@@ -98,3 +98,29 @@
 #register-btn {
     animation: fadeInUp 0.7s ease both;
 }
+
+.keep-signed-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    color: #638773;
+    font-size: 14px;
+    animation: fadeInUp 0.7s ease both;
+    animation-delay: 0.4s;
+    margin-left: 10px;
+}
+
+#keep-signed-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #38E07A;
+    cursor: pointer;
+}
+
+#keep-signed-label {
+    color: #638773;
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+}
