@@ -26,7 +26,6 @@ if (location.hostname === "localhost") {
     db = getDatabase(app);
 }
 
-
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
 const usernameInput = document.getElementById("username-input");
@@ -35,32 +34,26 @@ const registerBtn = document.getElementById("register-btn");
 const createAccountBtn = document.getElementById("create-account-btn");
 const keepSignedCheckbox = document.getElementById("keep-signed-checkbox");
 
-const updatePersistence = async (checked) => {
-    try {
-        const persistenceType = checked ? browserLocalPersistence : browserSessionPersistence;
-        await setPersistence(auth, persistenceType);
-        console.log("Persistence updated successfully");
-        localStorage.setItem('keepSignedIn', checked);
-    } catch (error) {
-        console.error("Error updating persistence:", error);
-    }
+if (localStorage.getItem("keepSignedIn") === "true") {
+    setPersistence(auth, browserLocalPersistence);
+} else {
+    setPersistence(auth, browserSessionPersistence);
 }
-
-const loadSavedPreference = () => {
-    const saved = localStorage.getItem('keepSignedIn');
-    if (saved !== null) {
-        keepSignedCheckbox.checked = saved === 'true';
-        updatePersistence(keepSignedCheckbox.checked);
-    }
-}
-
-loadSavedPreference();
 
 loginBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
 
     try {
+        const persistenceType = keepSignedCheckbox.checked ? browserLocalPersistence : browserSessionPersistence
+        await setPersistence(auth, persistenceType);
+
+        if (keepSignedCheckbox.checked) {
+            localStorage.setItem("keepSignedIn", "true");
+        } else {
+            localStorage.removeItem("keepSignedIn");
+        }
+
         await signInWithEmailAndPassword(auth, email, password);
         console.log("User signed in successfully");
         window.location.href = "/pages/index.html"; // Redirect to the main app page
