@@ -1,5 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, connectAuthEmulator, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    connectAuthEmulator,
+    setPersistence,
+    browserLocalPersistence,
+    browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 import { getDatabase, ref, set, get, onValue, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 import { firebaseConfig } from "../config.js";
 
@@ -30,10 +39,15 @@ const keepSignedCheckbox = document.getElementById("keep-signed-checkbox");
 loginBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
-    const persistence = keepSignedCheckbox.checked ? "local" : "session";
 
     try {
-        await setPersistence(auth, persistence === 'local' ? browserLocalPersistence : browserSessionPersistence);
+
+        if (keepSignedCheckbox.checked) {
+            await setPersistence(auth, browserLocalPersistence);
+        } else {
+            await setPersistence(auth, browserSessionPersistence);
+        }
+
         await signInWithEmailAndPassword(auth, email, password);
         console.log("User signed in successfully");
         window.location.href = "/pages/index.html"; // Redirect to the main app page
