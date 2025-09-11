@@ -30,6 +30,11 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+function getListIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("list");
+}
+
 
 function setupGroceriesApp(referenceInDb, user) {
 
@@ -305,6 +310,18 @@ function setupGroceriesApp(referenceInDb, user) {
       }
       listSelect.classList.remove("loading"); // Remove loading class
       listSelect.disabled = false; // Enable the select after loading
+
+      const listIdFromUrl = getListIdFromUrl();
+      if (listIdFromUrl) {
+        // Check if the option exists in the select
+        const option = Array.from(listSelect.options).find(opt => opt.value === listIdFromUrl);
+        if (option) {
+          listSelect.value = listIdFromUrl;
+          // Trigger the change event to load the list
+          const changeEvent = new Event('change');
+          listSelect.dispatchEvent(changeEvent);
+        }
+      }
 
     });
 

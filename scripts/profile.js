@@ -75,7 +75,7 @@ onAuthStateChanged(auth, (user) => {
                             <p id="list-name">${listData.name}</p>
                             <p id="list-members">${membersList}</p>
                         </div>
-                        <a href="/pages/list.html?listId=${sharedId}" class="view-list-btn">
+                        <a href="/pages/list.html?list=${sharedId}" class="view-list-btn">
                         <i class="fa-solid fa-angle-right view-list" id="view-list-btn" aria-hidden="true"></i>
                         </a>
                     </div>`;
