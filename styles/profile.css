@@ -41,7 +41,6 @@ h1 {
 
 h3 {
     font-size: 18px;
-    margin: 0 0 1rem 0;
 }
 
 #friends-container {
@@ -105,4 +104,18 @@ ul#friends-list {
     color: #999;
     display: block;
     padding: 10px;
+}
+
+.shared-lists-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 10px;
+}
+
+button#edit-list-btn {
+    background: none;
+    border: none;
+    color: #678774;
+    cursor: pointer;
 }
