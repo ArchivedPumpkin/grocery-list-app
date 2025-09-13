@@ -119,3 +119,23 @@ button#edit-list-btn {
     color: #678774;
     cursor: pointer;
 }
+
+a.view-list-btn {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: #666;
+}
+
+.delete-list-btn {
+    color: #ff4444;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.view-list-btn {
+    flex-grow: 1;
+}

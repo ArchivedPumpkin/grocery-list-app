@@ -70,9 +70,6 @@ onAuthStateChanged(auth, (user) => {
                     console.log("Members in shared list:", membersList);
 
                     const listItem = document.createElement("li");
-                    if (!listData.members || !listData.members[user.uid]) {
-                        continue; // Skip lists where the user is not a member
-                    }
                     listItem.innerHTML = `
                     
                     <div class="list-item">
@@ -112,11 +109,8 @@ onAuthStateChanged(auth, (user) => {
                     deleteBtn.addEventListener("click", async () => {
                         try {
                             const listRef = ref(db, `groceryLists/lists/${sharedId}`);
-                            const userListRef = ref(db, `users/${user.uid}/groceryLists/lists/${sharedId}`);
-                            const sharedListRef = ref(db, `users/${user.uid}/groceryLists/sharedLists/${sharedId}`);
+                            const userRef = ref(db, `users/${userId}/groceryLists/lists${sharedId}`);
                             const listSnapshot = await get(listRef);
-                            const userListSnapshot = await get(userListRef);
-                            const sharedListSnapshot = await get(sharedListRef);
 
                             if (listSnapshot.exists()) {
                                 const listData = listSnapshot.val();
@@ -132,16 +126,6 @@ onAuthStateChanged(auth, (user) => {
                                     console.log("User removed from shared list members.");
                                 }
                                 listItem.remove();
-                            }
-
-                            if (userListSnapshot.exists()) {
-                                await set(userListRef, null);
-                                console.log("List reference removed from user's profile.");
-                            }
-
-                            if (sharedListSnapshot.exists()) {
-                                await set(sharedListRef, null);
-                                console.log("Shared list reference removed from user's profile.");
                             }
 
                         } catch (error) {
