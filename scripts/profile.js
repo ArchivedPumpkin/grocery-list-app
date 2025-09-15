@@ -76,13 +76,14 @@ onAuthStateChanged(auth, (user) => {
 
                     for (let sharedId in sharedLists) {
                         const listData = sharedLists[sharedId];
+                        const listItem = document.createElement("li");
 
                         if (listData.members && listData.members[user.uid]) {
                             hasSharedLists = true;
                             const membersList = Object.values(listData.members).map(member => member.username).join(', ');
                             console.log("Members in shared list:", membersList);
 
-                            const listItem = document.createElement("li");
+
                             listItem.innerHTML = `
                             <div class="list-item">
                             <a href="/pages/list.html?list=${sharedId}" class="view-list-btn">
