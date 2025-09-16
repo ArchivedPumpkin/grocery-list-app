@@ -240,7 +240,6 @@ i.fa-solid.fa-arrow-left#back-btn {
     font-size: 20px;
     cursor: pointer;
     color: #434343;
-    margin-left: 20px;
 }
 
 .ingredients-list-container,
@@ -408,6 +407,18 @@ ul#ingredients-list {
 .recipes-container {
     animation: fadeInUp 0.7s ease both;
     animation-delay: 0.3s;
+}
+
+.action-area {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+button#action-edit-recipe {
+    background: none;
+    border: none;
+    color: #688774;
 }
 
 @keyframes fadeInUp {

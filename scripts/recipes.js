@@ -177,7 +177,10 @@ onAuthStateChanged(auth, async (user) => {
         editSection.innerHTML = `
         <div class="edit-recipe-header">
             <div class="recipe-header-info">
-                <i class="fa-solid fa-arrow-left" id="back-btn" aria-hidden="true"></i>
+                <div class="action-area">
+                    <i class="fa-solid fa-arrow-left" id="back-btn" aria-hidden="true"></i>
+                    <button id="action-edit-recipe">Edit</button>
+                </div>
                 <h1 class="recipe-title">${recipe.name}</h1>
             </div>
             <div id="instructions-container">
