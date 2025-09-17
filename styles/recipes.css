@@ -415,7 +415,8 @@ ul#ingredients-list {
     margin: 0 20px;
 }
 
-button#action-edit-recipe {
+button#action-edit-recipe,
+button#save-recipe-btn {
     background: none;
     border: none;
     color: #688774;

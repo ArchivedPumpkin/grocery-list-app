@@ -186,7 +186,7 @@ onAuthStateChanged(auth, async (user) => {
             <div id="instructions-container">
                 <div class="instructions-header">
                     <h2 class="instructions-title">Instructions</h2>
-                    <i class="fa-solid fa-pen edit-instructions">_</i>
+                    <i class="fa-solid fa-pen edit-instructions" style="display: none;">_</i>
                 </div>
                 <div id="instructions-content" placeholder="Enter instructions">${recipe.instructions}</div>
                 <textarea id="instructions-input" class="hide" placeholder="Enter instructions" style="white-space: pre-wrap;">${recipe.instructions}</textarea>
@@ -194,7 +194,7 @@ onAuthStateChanged(auth, async (user) => {
             <div id="ingredients-container">
                 <div class="ingredients-list-container">
                     <h2 class="ingredients-title">Ingredients</h2>
-                    <i class="fa-solid fa-pen edit-ingredients">_</i>
+                    <i class="fa-solid fa-pen edit-ingredients" style="display: none;">_</i>
                 </div>
                 <div id="ingredients-input-container" class="hide">
                     <section class="ingredient-section">
@@ -469,33 +469,37 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         const editInstructionsBtn = document.querySelector(".edit-instructions");
-        editInstructionsBtn.addEventListener("click", () => {
+        const editIngredientsBtn = document.querySelector(".edit-ingredients");
+        const actionArea = document.querySelector(".action-area");
+        const newSaveRecipeBtn = document.createElement("button");
+        newSaveRecipeBtn.id = "save-recipe-btn";
+        newSaveRecipeBtn.textContent = "Save";
+
+        function toggleRecipeEditing() {
             const inputInstructions = document.getElementById("instructions-input");
-            const instructionsContent = document.getElementById("instructions-content");
 
             inputInstructions.addEventListener("input", () => {
                 autoResizeTextarea(inputInstructions);
             });
 
-            if (inputInstructions.classList.contains("hide")) {
-                toggleEditState(false, true);
-                autoResizeTextarea(inputInstructions);
-            } else {
-                saveInstructions();
-                toggleEditState(false, false);
-            }
+            toggleEditState(true, true);
+            autoResizeTextarea(inputInstructions);
+
+        }
+
+        const editRecipe = document.getElementById("action-edit-recipe");
+        editRecipe.addEventListener("click", () => {
+            toggleRecipeEditing();
+            editRecipe.style.display = "none";
+            actionArea.appendChild(newSaveRecipeBtn);
         })
 
-        const editIngredientsBtn = document.querySelector(".edit-ingredients");
-        editIngredientsBtn.addEventListener("click", () => {
-            const ingredientsInputContainer = document.getElementById("ingredients-input-container");
-
-            if (ingredientsInputContainer.classList.contains("hide")) {
-                toggleEditState(true, false);
-            } else {
-                toggleEditState(false, false);
-            }
+        newSaveRecipeBtn.addEventListener("click", () => {
+            saveInstructions();
+            editRecipe.style.display = "block";
+            newSaveRecipeBtn.remove();
         })
+
 
         const addIngredientBtn = document.getElementById("add-ingredient-btn");
         addIngredientBtn.addEventListener("click", () => {
